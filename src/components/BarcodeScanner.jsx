@@ -152,38 +152,40 @@ export default function BarcodeScanner({ onFoodFound, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Scan Barcode
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-6 border border-gray-100 animate-scale-in">
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-3xl font-bold text-gray-900">
+            📷 Scan Barcode
           </h2>
           <button
             onClick={handleClose}
-            className="text-gray-500 hover:text-gray-700 text-3xl leading-none"
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200"
             aria-label="Close"
           >
-            &times;
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
         {/* Instructions */}
-        <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-800">
-            Point your camera at a product barcode. The scanner will automatically detect and look up nutrition information.
+        <div className="mb-5 p-4 bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl border-2 border-blue-100">
+          <p className="text-sm text-blue-900 font-medium">
+            💡 Point your camera at a product barcode. The scanner will automatically detect and look up nutrition information.
           </p>
         </div>
 
         {/* Camera Preview */}
-        <div className="relative mb-4 bg-black rounded-lg overflow-hidden">
+        <div className="relative mb-5 bg-black rounded-2xl overflow-hidden border-2 border-gray-200 shadow-lg">
           <div id="barcode-reader" className="w-full min-h-[400px]"></div>
 
           {/* Loading Overlay */}
           {isLoading && (
-            <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-2"></div>
-                <p className="text-white font-medium">Looking up product...</p>
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center">
+              <div className="text-center bg-white/10 backdrop-blur-md rounded-2xl p-6">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-white mx-auto mb-3"></div>
+                <p className="text-white font-semibold text-lg">Looking up product...</p>
               </div>
             </div>
           )}
@@ -191,33 +193,33 @@ export default function BarcodeScanner({ onFoodFound, onClose }) {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-800 font-medium">{error}</p>
+          <div className="mb-5 p-4 bg-gradient-to-br from-red-50 to-pink-50/50 border-2 border-red-200 rounded-2xl">
+            <p className="text-red-800 font-semibold">⚠️ {error}</p>
           </div>
         )}
 
         {/* Status Info */}
         {isScanning && !error && !isLoading && (
-          <div className="mb-4 p-3 bg-green-50 rounded-lg">
-            <p className="text-sm text-green-800 text-center">
-              Camera active - Ready to scan
+          <div className="mb-5 p-4 bg-gradient-to-br from-green-50 to-emerald-50/50 border-2 border-green-200 rounded-2xl">
+            <p className="text-sm text-green-800 text-center font-semibold">
+              ✅ Camera active - Ready to scan
             </p>
           </div>
         )}
 
         {/* Close Button */}
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-2">
           <button
             onClick={handleClose}
-            className="px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
+            className="px-8 py-3.5 bg-white border-2 border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 hover:shadow-md transition-all duration-200 active:scale-95"
           >
             Close Scanner
           </button>
         </div>
 
         {/* Help Text */}
-        <div className="mt-4 text-center text-sm text-gray-600">
-          <p>Supported formats: UPC-A, EAN-13, EAN-8, Code 128, and more</p>
+        <div className="mt-5 text-center text-xs text-gray-500 bg-gray-50 rounded-xl p-3">
+          <p className="font-medium">📱 Supported formats: UPC-A, EAN-13, EAN-8, Code 128, and more</p>
           <p className="mt-1">Works best with clear, well-lit barcodes</p>
         </div>
       </div>

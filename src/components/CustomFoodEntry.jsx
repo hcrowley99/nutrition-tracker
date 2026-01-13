@@ -52,23 +52,24 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto border border-gray-100 animate-scale-in">
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">
           Add Custom Food
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Food Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Food Name *
+            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+              <span>🍽️</span>
+              <span>Food Name *</span>
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => handleChange('name', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+              className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
               placeholder="e.g., Homemade Pasta"
               required
             />
@@ -77,14 +78,15 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
           {/* Serving Size */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Serving Size *
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <span>📏</span>
+                <span>Serving Size *</span>
               </label>
               <input
                 type="number"
                 value={formData.servingSize}
                 onChange={(e) => handleChange('servingSize', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
                 placeholder="100"
                 min="0"
                 step="0.1"
@@ -92,13 +94,13 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Unit
               </label>
               <select
                 value={formData.servingUnit}
                 onChange={(e) => handleChange('servingUnit', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
               >
                 <option value="g">g</option>
                 <option value="ml">ml</option>
@@ -112,21 +114,22 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
           </div>
 
           {/* Nutrition Information */}
-          <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-            <h3 className="font-medium text-gray-700 mb-2">
+          <div className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-2xl p-5 border-2 border-gray-100 space-y-3">
+            <h3 className="font-bold text-gray-900 mb-3 text-lg">
               Nutrition per serving
             </h3>
 
             {/* Calories */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Calories (kcal) *
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <span>🔥</span>
+                <span>Calories (kcal) *</span>
               </label>
               <input
                 type="number"
                 value={formData.calories}
                 onChange={(e) => handleChange('calories', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
                 placeholder="0"
                 min="0"
                 step="1"
@@ -136,14 +139,15 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
 
             {/* Protein */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Protein (g) *
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <span>💪</span>
+                <span>Protein (g) *</span>
               </label>
               <input
                 type="number"
                 value={formData.protein}
                 onChange={(e) => handleChange('protein', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
                 placeholder="0"
                 min="0"
                 step="0.1"
@@ -153,14 +157,15 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
 
             {/* Carbs */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Carbohydrates (g) *
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <span>🌾</span>
+                <span>Carbohydrates (g) *</span>
               </label>
               <input
                 type="number"
                 value={formData.carbs}
                 onChange={(e) => handleChange('carbs', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
                 placeholder="0"
                 min="0"
                 step="0.1"
@@ -170,14 +175,15 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
 
             {/* Fat */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Fat (g) *
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <span>🥑</span>
+                <span>Fat (g) *</span>
               </label>
               <input
                 type="number"
                 value={formData.fat}
                 onChange={(e) => handleChange('fat', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
                 placeholder="0"
                 min="0"
                 step="0.1"
@@ -187,14 +193,15 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
 
             {/* Fiber (optional) */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Fiber (g)
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <span>🌿</span>
+                <span>Fiber (g)</span>
               </label>
               <input
                 type="number"
                 value={formData.fiber}
                 onChange={(e) => handleChange('fiber', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
                 placeholder="0 (optional)"
                 min="0"
                 step="0.1"
@@ -203,25 +210,25 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex gap-3 pt-6">
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              className="flex-1 px-6 py-3.5 bg-white border-2 border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 hover:shadow-md transition-all duration-200 active:scale-95"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!isFormValid()}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               Add Food
             </button>
           </div>
         </form>
 
-        <p className="text-xs text-gray-500 mt-4 text-center">
+        <p className="text-xs text-gray-500 mt-5 text-center bg-gray-50 rounded-xl p-3">
           * Required fields
         </p>
       </div>

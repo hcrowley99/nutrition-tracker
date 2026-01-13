@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 /**
- * Goals Setting Component
- * Allows users to set their daily nutrition goals
+ * Goals Setting Component - Enhanced Design
+ * Allows users to set their daily nutrition goals with Apple-inspired styling
  */
 export default function GoalsSetting({ goals, onSaveGoals, onClose }) {
   const [localGoals, setLocalGoals] = useState(goals);
@@ -18,108 +18,54 @@ export default function GoalsSetting({ goals, onSaveGoals, onClose }) {
     if (onClose) onClose();
   };
 
+  const nutrients = [
+    { key: 'calories', label: 'Calories', unit: 'kcal', step: 50, icon: '🔥' },
+    { key: 'protein', label: 'Protein', unit: 'g', step: 5, icon: '💪' },
+    { key: 'carbs', label: 'Carbohydrates', unit: 'g', step: 5, icon: '🌾' },
+    { key: 'fat', label: 'Fat', unit: 'g', step: 5, icon: '🥑' },
+    { key: 'fiber', label: 'Fiber', unit: 'g', step: 5, icon: '🌿' },
+  ];
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-gray-100 animate-scale-in">
+        <h2 className="text-3xl font-bold text-gray-900 mb-6">
           Set Your Daily Goals
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Calories */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Calories (kcal)
-            </label>
-            <input
-              type="number"
-              value={localGoals.calories}
-              onChange={(e) => handleChange('calories', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-              min="0"
-              step="50"
-              required
-            />
-          </div>
-
-          {/* Protein */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Protein (g)
-            </label>
-            <input
-              type="number"
-              value={localGoals.protein}
-              onChange={(e) => handleChange('protein', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-              min="0"
-              step="5"
-              required
-            />
-          </div>
-
-          {/* Carbs */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Carbohydrates (g)
-            </label>
-            <input
-              type="number"
-              value={localGoals.carbs}
-              onChange={(e) => handleChange('carbs', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-              min="0"
-              step="5"
-              required
-            />
-          </div>
-
-          {/* Fat */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Fat (g)
-            </label>
-            <input
-              type="number"
-              value={localGoals.fat}
-              onChange={(e) => handleChange('fat', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-              min="0"
-              step="5"
-              required
-            />
-          </div>
-
-          {/* Fiber */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Fiber (g)
-            </label>
-            <input
-              type="number"
-              value={localGoals.fiber}
-              onChange={(e) => handleChange('fiber', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
-              min="0"
-              step="5"
-              required
-            />
-          </div>
+          {nutrients.map(({ key, label, unit, step, icon }) => (
+            <div key={key}>
+              <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <span>{icon}</span>
+                <span>{label} ({unit})</span>
+              </label>
+              <input
+                type="number"
+                value={localGoals[key]}
+                onChange={(e) => handleChange(key, e.target.value)}
+                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
+                min="0"
+                step={step}
+                required
+              />
+            </div>
+          ))}
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-3 pt-6">
             {onClose && (
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                className="flex-1 px-6 py-3.5 bg-white border-2 border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 hover:shadow-md transition-all duration-200 active:scale-95"
               >
                 Cancel
               </button>
             )}
             <button
               type="submit"
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 active:scale-95"
             >
               Save Goals
             </button>
@@ -127,8 +73,8 @@ export default function GoalsSetting({ goals, onSaveGoals, onClose }) {
         </form>
 
         {/* Info text */}
-        <p className="text-xs text-gray-500 mt-4 text-center">
-          Recommended: 2000 kcal, 150g protein, 200g carbs, 65g fat, 30g fiber
+        <p className="text-xs text-gray-500 mt-5 text-center bg-gray-50 rounded-xl p-3">
+          💡 Recommended: 2000 kcal, 150g protein, 200g carbs, 65g fat, 30g fiber
         </p>
       </div>
     </div>
