@@ -7,6 +7,8 @@ import FoodSearch from './components/FoodSearch';
 import FoodLogger from './components/FoodLogger';
 import FoodList from './components/FoodList';
 import CustomFoodEntry from './components/CustomFoodEntry';
+import SummaryView from './components/SummaryView';
+import BarcodeScanner from './components/BarcodeScanner';
 
 // Default nutrition goals
 const DEFAULT_GOALS = {
@@ -25,6 +27,8 @@ function App() {
   const [showGoalsModal, setShowGoalsModal] = useState(false);
   const [selectedFood, setSelectedFood] = useState(null);
   const [showCustomFoodModal, setShowCustomFoodModal] = useState(false);
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
+  const [viewMode, setViewMode] = useState('daily'); // 'daily', 'weekly', 'monthly'
 
   // Calculate totals and progress for selected date
   const todaysFoods = loggedFoods.filter(food => food.date === selectedDate);
@@ -46,6 +50,12 @@ function App() {
   const handleAddCustomFood = (customFood) => {
     setShowCustomFoodModal(false);
     setSelectedFood(customFood); // Pass to logger modal for quantity adjustment
+  };
+
+  // Handler: Food found from barcode scan (opens logger modal)
+  const handleBarcodeScanned = (food) => {
+    setShowBarcodeScanner(false);
+    setSelectedFood(food); // Pass to logger modal for quantity adjustment
   };
 
   // Handler: Add food to log
@@ -75,71 +85,126 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-cyan-50/30">
       {/* Header */}
-      <header className="bg-blue-600 text-white shadow-lg">
-        <div className="max-w-2xl mx-auto px-4 py-4">
+      <header className="bg-gradient-to-r from-blue-500 via-blue-600 to-cyan-500 text-white shadow-2xl">
+        <div className="max-w-2xl mx-auto px-4 py-5">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">NutriTrack</h1>
+            <h1 className="text-3xl font-bold tracking-tight">NutriTrack</h1>
             <button
               onClick={() => setShowGoalsModal(true)}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-700 rounded-lg text-sm font-medium transition-colors"
+              className="px-5 py-2.5 bg-white/10 hover:bg-white/20 border-2 border-white/30 rounded-xl text-sm font-semibold transition-all duration-200 backdrop-blur-sm"
             >
               Set Goals
             </button>
           </div>
 
-          {/* Date Selector */}
-          <div className="mt-4 flex items-center justify-between">
+          {/* View Mode Tabs */}
+          <div className="mt-5 flex gap-2 bg-white/10 backdrop-blur-sm rounded-xl p-1.5">
             <button
-              onClick={() => handleDateChange(-1)}
-              className="p-2 hover:bg-blue-500 rounded-lg transition-colors"
+              onClick={() => setViewMode('daily')}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                viewMode === 'daily'
+                  ? 'bg-white text-blue-600 shadow-md'
+                  : 'text-white/90 hover:bg-white/10'
+              }`}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+              Daily
             </button>
-            <div className="text-center">
-              <p className="text-lg font-semibold">{formatDate(selectedDate)}</p>
-              {selectedDate === getTodayDate() && (
-                <p className="text-sm text-blue-200">Today</p>
-              )}
-            </div>
             <button
-              onClick={() => handleDateChange(1)}
-              className="p-2 hover:bg-blue-500 rounded-lg transition-colors"
-              disabled={selectedDate === getTodayDate()}
+              onClick={() => setViewMode('weekly')}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                viewMode === 'weekly'
+                  ? 'bg-white text-blue-600 shadow-md'
+                  : 'text-white/90 hover:bg-white/10'
+              }`}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              Weekly
+            </button>
+            <button
+              onClick={() => setViewMode('monthly')}
+              className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                viewMode === 'monthly'
+                  ? 'bg-white text-blue-600 shadow-md'
+                  : 'text-white/90 hover:bg-white/10'
+              }`}
+            >
+              Monthly
             </button>
           </div>
+
+          {/* Date Selector - Only show in daily view */}
+          {viewMode === 'daily' && (
+            <div className="mt-5 flex items-center justify-between">
+              <button
+                onClick={() => handleDateChange(-1)}
+                className="p-3 hover:bg-white/15 rounded-xl transition-all duration-200 active:scale-95"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div className="text-center">
+                <p className="text-xl font-semibold">{formatDate(selectedDate)}</p>
+                {selectedDate === getTodayDate() && (
+                  <span className="inline-block mt-1 px-3 py-0.5 bg-white/20 rounded-full text-xs font-medium">
+                    Today
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => handleDateChange(1)}
+                className="p-3 hover:bg-white/15 rounded-xl transition-all duration-200 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                disabled={selectedDate === getTodayDate()}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        {/* Daily Progress */}
-        <DailyProgress totals={totals} goals={goals} progress={progress} />
+        {/* Show Summary View or Daily View based on viewMode */}
+        {viewMode === 'daily' ? (
+          <>
+            {/* Daily Progress */}
+            <DailyProgress totals={totals} goals={goals} progress={progress} />
 
-        {/* Food Search and Custom Food Button */}
-        <div className="space-y-3">
-          <FoodSearch onSelectFood={handleSelectFood} />
+            {/* Food Search and Action Buttons */}
+            <div className="space-y-3">
+              <FoodSearch onSelectFood={handleSelectFood} />
 
-          {/* Add Custom Food Button */}
-          <div className="text-center">
-            <button
-              onClick={() => setShowCustomFoodModal(true)}
-              className="px-6 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors shadow-md"
-            >
-              + Add Custom Food
-            </button>
-          </div>
-        </div>
+              {/* Action Buttons */}
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => setShowBarcodeScanner(true)}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Scan
+                </button>
+                <button
+                  onClick={() => setShowCustomFoodModal(true)}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md active:scale-95"
+                >
+                  + Custom
+                </button>
+              </div>
+            </div>
 
-        {/* Food List */}
-        <FoodList foods={todaysFoods} onDeleteFood={handleDeleteFood} />
+            {/* Food List */}
+            <FoodList foods={todaysFoods} onDeleteFood={handleDeleteFood} />
+          </>
+        ) : (
+          <SummaryView loggedFoods={loggedFoods} goals={goals} viewType={viewMode} />
+        )}
       </main>
 
       {/* Modals */}
@@ -155,6 +220,13 @@ function App() {
         <CustomFoodEntry
           onAddFood={handleAddCustomFood}
           onCancel={() => setShowCustomFoodModal(false)}
+        />
+      )}
+
+      {showBarcodeScanner && (
+        <BarcodeScanner
+          onFoodFound={handleBarcodeScanned}
+          onClose={() => setShowBarcodeScanner(false)}
         />
       )}
 

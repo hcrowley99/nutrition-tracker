@@ -88,3 +88,58 @@ export async function getFoodDetails(fdcId) {
 export function isApiConfigured() {
   return !!API_KEY && API_KEY.length > 0;
 }
+
+/**
+ * Look up food by barcode using Open Food Facts API
+ *
+ * @param {string} barcode - UPC/EAN barcode number
+ * @returns {Promise<Object|null>} - Food object with nutrition info or null if not found
+ */
+export async function lookupFoodByBarcode(barcode) {
+  if (!barcode || barcode.trim().length === 0) {
+    return null;
+  }
+
+  try {
+    // Try Open Food Facts API first
+    const offResponse = await fetch(
+      `https://world.openfoodfacts.net/api/v2/product/${barcode}`
+    );
+
+    if (!offResponse.ok) {
+      throw new Error(`API error: ${offResponse.status}`);
+    }
+
+    const offData = await offResponse.json();
+
+    // Check if product was found
+    if (offData.status === 0 || !offData.product) {
+      return null;
+    }
+
+    const product = offData.product;
+
+    // Extract nutrition data per 100g (Open Food Facts standard)
+    const nutriments = product.nutriments || {};
+
+    // Convert Open Food Facts data to our format
+    return {
+      fdcId: `OFF-${barcode}`,
+      name: product.product_name || product.product_name_en || 'Unknown Product',
+      brandName: product.brands || null,
+      calories: Math.round(nutriments.energy_value || nutriments['energy-kcal_100g'] || 0),
+      protein: Math.round(nutriments.proteins_100g || 0),
+      carbs: Math.round(nutriments.carbohydrates_100g || 0),
+      fat: Math.round(nutriments.fat_100g || 0),
+      fiber: Math.round(nutriments.fiber_100g || 0),
+      servingSize: product.serving_quantity || 100,
+      servingUnit: product.serving_quantity_unit || 'g',
+      dataType: 'Barcode',
+      barcode: barcode,
+      imageUrl: product.image_url || null,
+    };
+  } catch (error) {
+    console.error('Error looking up barcode:', error);
+    throw new Error('Failed to look up barcode. Please try again or search manually.');
+  }
+}

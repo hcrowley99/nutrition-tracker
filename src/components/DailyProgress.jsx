@@ -1,88 +1,100 @@
+import CalorieRing from './CalorieRing';
+
 /**
- * Daily Progress Component
- * Shows current nutrition totals vs goals with progress bars
+ * Daily Progress Component - Apple Health Inspired
+ * Shows calorie ring and gradient macro cards
  */
 export default function DailyProgress({ totals, goals, progress }) {
-  // Determine color based on progress percentage
-  const getColor = (percentage) => {
-    if (percentage >= 90 && percentage <= 110) return 'bg-green-500';
-    if (percentage >= 110) return 'bg-red-500';
-    return 'bg-yellow-500';
-  };
-
-  const getTextColor = (percentage) => {
-    if (percentage >= 90 && percentage <= 110) return 'text-green-600';
-    if (percentage >= 110) return 'text-red-600';
-    return 'text-yellow-600';
-  };
-
+  // Macro nutrients with gradient colors
   const nutrients = [
-    { key: 'protein', label: 'Protein', unit: 'g' },
-    { key: 'carbs', label: 'Carbs', unit: 'g' },
-    { key: 'fat', label: 'Fat', unit: 'g' },
-    { key: 'fiber', label: 'Fiber', unit: 'g' },
+    {
+      key: 'protein',
+      label: 'Protein',
+      unit: 'g',
+      icon: '💪',
+      gradient: 'from-cyan-500 to-teal-400',
+      bgGradient: 'from-cyan-50 to-teal-50',
+      borderColor: 'border-cyan-200'
+    },
+    {
+      key: 'carbs',
+      label: 'Carbs',
+      unit: 'g',
+      icon: '🌾',
+      gradient: 'from-yellow-400 to-amber-300',
+      bgGradient: 'from-yellow-50 to-amber-50',
+      borderColor: 'border-yellow-200'
+    },
+    {
+      key: 'fat',
+      label: 'Fat',
+      unit: 'g',
+      icon: '🥑',
+      gradient: 'from-green-400 to-emerald-400',
+      bgGradient: 'from-green-50 to-emerald-50',
+      borderColor: 'border-green-200'
+    },
+    {
+      key: 'fiber',
+      label: 'Fiber',
+      unit: 'g',
+      icon: '🌿',
+      gradient: 'from-blue-500 to-blue-400',
+      bgGradient: 'from-blue-50 to-blue-50',
+      borderColor: 'border-blue-200'
+    },
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-4">
-      {/* Calories - Large Display */}
-      <div className="text-center mb-6 pb-6 border-b border-gray-200">
-        <p className="text-sm text-gray-600 mb-1">Calories</p>
-        <div className="flex items-center justify-center gap-2">
-          <span className={`text-4xl font-bold ${getTextColor(progress.calories)}`}>
-            {Math.round(totals.calories)}
-          </span>
-          <span className="text-2xl text-gray-400">/</span>
-          <span className="text-2xl text-gray-600">{goals.calories}</span>
-        </div>
-        <div className="mt-3 w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-          <div
-            className={`h-full transition-all duration-300 ${getColor(progress.calories)}`}
-            style={{ width: `${Math.min(progress.calories, 100)}%` }}
-          ></div>
-        </div>
-        <p className="text-sm text-gray-500 mt-2">
-          {Math.round(progress.calories)}% of daily goal
-        </p>
+    <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-card p-6 mb-6 border border-white/50">
+      {/* Calorie Ring - Hero Element */}
+      <div className="flex justify-center mb-8">
+        <CalorieRing current={totals.calories} goal={goals.calories} />
       </div>
 
-      {/* Macros Grid */}
-      <div className="grid grid-cols-1 gap-4">
-        {nutrients.map(({ key, label, unit }) => (
-          <div key={key}>
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-sm font-medium text-gray-700">{label}</span>
-              <span className={`text-sm font-semibold ${getTextColor(progress[key])}`}>
-                {Math.round(totals[key])}{unit} / {goals[key]}{unit}
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-              <div
-                className={`h-full transition-all duration-300 ${getColor(progress[key])}`}
-                style={{ width: `${Math.min(progress[key], 100)}%` }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              {Math.round(progress[key])}%
-            </p>
-          </div>
-        ))}
-      </div>
+      {/* Macro Cards Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {nutrients.map(({ key, label, unit, icon, gradient, bgGradient, borderColor }) => {
+          const value = Math.round(totals[key]);
+          const goalValue = goals[key];
+          const percentage = Math.min(progress[key], 100);
 
-      {/* Legend */}
-      <div className="mt-4 pt-4 border-t border-gray-200 flex gap-4 text-xs text-gray-600">
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-          <span>Under goal</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          <span>On track</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-          <span>Over goal</span>
-        </div>
+          return (
+            <div
+              key={key}
+              className={`bg-gradient-to-br ${bgGradient} border-2 ${borderColor} rounded-2xl p-4 shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200`}
+            >
+              {/* Icon and Label */}
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xl">{icon}</span>
+                <span className="text-sm font-semibold text-gray-700">{label}</span>
+              </div>
+
+              {/* Values */}
+              <div className="mb-2">
+                <div className="flex items-baseline gap-1">
+                  <span className={`text-2xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
+                    {value}
+                  </span>
+                  <span className="text-xs text-gray-500">/ {goalValue}{unit}</span>
+                </div>
+              </div>
+
+              {/* Mini Progress Bar */}
+              <div className="w-full bg-white/50 rounded-full h-1.5 overflow-hidden mb-2">
+                <div
+                  className={`h-full bg-gradient-to-r ${gradient} rounded-full transition-all duration-500`}
+                  style={{ width: `${percentage}%` }}
+                />
+              </div>
+
+              {/* Percentage */}
+              <div className="text-xs font-medium text-gray-600">
+                {Math.round(progress[key])}%
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
