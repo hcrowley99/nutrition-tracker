@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { lookupFoodByBarcode } from '../utils/api';
 
 /**
@@ -9,10 +9,10 @@ import { lookupFoodByBarcode } from '../utils/api';
  */
 export default function BarcodeScanner({ onFoodFound, onClose }) {
   const scannerRef = useRef(null);
+  const lastScannedCodeRef = useRef(null);
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [lastScannedCode, setLastScannedCode] = useState(null);
 
   useEffect(() => {
     let html5QrCode = null;
@@ -37,17 +37,17 @@ export default function BarcodeScanner({ onFoodFound, onClose }) {
             qrbox: { width: 250, height: 150 }, // Scanning area (wider for barcodes)
             aspectRatio: 1.777778, // 16:9 aspect ratio
             formatsToSupport: [
-              // Common barcode formats
-              0,  // QR_CODE
-              5,  // EAN_13 (most common on products)
-              6,  // EAN_8
-              7,  // UPC_A
-              8,  // UPC_E
-              9,  // CODE_39
-              10, // CODE_93
-              11, // CODE_128
-              12, // ITF
-              13, // CODABAR
+              // Common barcode formats (using proper enum values)
+              Html5QrcodeSupportedFormats.QR_CODE,
+              Html5QrcodeSupportedFormats.EAN_13,      // Most common on products
+              Html5QrcodeSupportedFormats.EAN_8,
+              Html5QrcodeSupportedFormats.UPC_A,
+              Html5QrcodeSupportedFormats.UPC_E,
+              Html5QrcodeSupportedFormats.CODE_39,
+              Html5QrcodeSupportedFormats.CODE_93,
+              Html5QrcodeSupportedFormats.CODE_128,
+              Html5QrcodeSupportedFormats.ITF,
+              Html5QrcodeSupportedFormats.CODABAR,
             ]
           };
 
@@ -88,11 +88,11 @@ export default function BarcodeScanner({ onFoodFound, onClose }) {
    */
   const onScanSuccess = async (decodedText, decodedResult) => {
     // Prevent duplicate scans of the same code
-    if (decodedText === lastScannedCode) {
+    if (decodedText === lastScannedCodeRef.current) {
       return;
     }
 
-    setLastScannedCode(decodedText);
+    lastScannedCodeRef.current = decodedText;
     setIsLoading(true);
     setError(null);
 
@@ -111,7 +111,7 @@ export default function BarcodeScanner({ onFoodFound, onClose }) {
       } else {
         // Product not found
         setError(`Barcode ${decodedText} not found in database. Try manual search.`);
-        setLastScannedCode(null);
+        lastScannedCodeRef.current = null;
 
         // Resume scanning
         if (scannerRef.current) {
@@ -121,7 +121,7 @@ export default function BarcodeScanner({ onFoodFound, onClose }) {
     } catch (err) {
       console.error('Error looking up barcode:', err);
       setError(err.message || 'Failed to look up product. Please try again.');
-      setLastScannedCode(null);
+      lastScannedCodeRef.current = null;
 
       // Resume scanning
       if (scannerRef.current) {
