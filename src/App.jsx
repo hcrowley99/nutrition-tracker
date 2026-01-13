@@ -10,6 +10,7 @@ import FoodList from './components/FoodList';
 import CustomFoodEntry from './components/CustomFoodEntry';
 import SummaryView from './components/SummaryView';
 import BarcodeScanner from './components/BarcodeScanner';
+import CopyFromDay from './components/CopyFromDay';
 
 // Default nutrition goals
 const DEFAULT_GOALS = {
@@ -29,6 +30,7 @@ function App() {
   const [selectedFood, setSelectedFood] = useState(null);
   const [showCustomFoodModal, setShowCustomFoodModal] = useState(false);
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
+  const [showCopyModal, setShowCopyModal] = useState(false);
   const [viewMode, setViewMode] = useState('daily'); // 'daily', 'weekly', 'monthly'
 
   // Calculate totals and progress for selected date
@@ -92,6 +94,17 @@ function App() {
     if (window.confirm('Delete this food entry?')) {
       setLoggedFoods(loggedFoods.filter(food => food.id !== foodId));
     }
+  };
+
+  // Handler: Copy foods from another date
+  const handleCopyFoods = (foodsToCopy) => {
+    const newFoods = foodsToCopy.map(food => ({
+      ...food,
+      id: Date.now().toString() + Math.random(), // New unique ID
+      date: selectedDate, // Copy to current selected date
+    }));
+
+    setLoggedFoods([...loggedFoods, ...newFoods]);
   };
 
   // Handler: Change date
@@ -196,22 +209,31 @@ function App() {
               <FoodSearch onSelectFood={handleSelectFood} />
 
               {/* Action Buttons */}
-              <div className="flex gap-3 justify-center">
+              <div className="grid grid-cols-3 gap-3">
                 <button
                   onClick={() => setShowBarcodeScanner(true)}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md flex items-center justify-center gap-2 active:scale-95"
+                  className="px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md flex items-center justify-center gap-2 active:scale-95"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  Scan
+                  <span className="hidden sm:inline">Scan</span>
                 </button>
                 <button
                   onClick={() => setShowCustomFoodModal(true)}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md active:scale-95"
+                  className="px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md active:scale-95"
                 >
                   + Custom
+                </button>
+                <button
+                  onClick={() => setShowCopyModal(true)}
+                  className="px-4 py-3 bg-gradient-to-r from-cyan-500 to-teal-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                  </svg>
+                  <span className="hidden sm:inline">Copy</span>
                 </button>
               </div>
             </div>
@@ -252,6 +274,15 @@ function App() {
           food={selectedFood}
           onAddFood={handleAddFood}
           onCancel={() => setSelectedFood(null)}
+        />
+      )}
+
+      {showCopyModal && (
+        <CopyFromDay
+          loggedFoods={loggedFoods}
+          selectedDate={selectedDate}
+          onCopyFoods={handleCopyFoods}
+          onClose={() => setShowCopyModal(false)}
         />
       )}
     </div>
