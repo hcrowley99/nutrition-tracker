@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useFoodSearch } from '../hooks/useFoodSearch';
+import { getRecentFoods, clearRecentFoods } from '../utils/recentFoods';
 
 /**
  * Food Search Component - Enhanced Design
@@ -8,6 +9,12 @@ import { useFoodSearch } from '../hooks/useFoodSearch';
 export default function FoodSearch({ onSelectFood }) {
   const [query, setQuery] = useState('');
   const { results, loading, error } = useFoodSearch(query);
+  const [recentFoods, setRecentFoods] = useState([]);
+
+  // Load recent foods on mount
+  useEffect(() => {
+    setRecentFoods(getRecentFoods());
+  }, []);
 
   const handleClear = () => {
     setQuery('');
@@ -76,12 +83,68 @@ export default function FoodSearch({ onSelectFood }) {
         </div>
       )}
 
-      {!query && (
+      {/* Recent Foods (when search is empty) */}
+      {!query && recentFoods.length > 0 && (
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold text-gray-900">⏱️ Recent Foods</h3>
+            <button
+              onClick={() => {
+                clearRecentFoods();
+                setRecentFoods([]);
+              }}
+              className="text-xs text-gray-500 hover:text-gray-700 font-medium"
+            >
+              Clear
+            </button>
+          </div>
+          <div className="space-y-3 max-h-[480px] overflow-y-auto pr-2 custom-scrollbar">
+            {recentFoods.map((food) => (
+              <div
+                key={food.fdcId + food.lastAdded}
+                className="bg-gradient-to-br from-gray-50 to-blue-50/30 border-2 border-blue-100 rounded-2xl p-4 hover:border-blue-200 hover:shadow-md transition-all duration-200"
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1 pr-3">
+                    <h3 className="font-semibold text-gray-900 text-base leading-tight mb-1">
+                      {food.name}
+                    </h3>
+                    {food.brandName && (
+                      <p className="text-sm text-gray-500 font-medium">{food.brandName}</p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleSelectFood(food)}
+                    className="px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 active:scale-95 flex-shrink-0"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex gap-3 text-sm font-medium text-gray-700 mb-1">
+                  <span className="font-bold text-red-600">{Math.round(food.calories)} cal</span>
+                  <span className="text-gray-400">|</span>
+                  <span>P: {Math.round(food.protein)}g</span>
+                  <span className="text-gray-400">|</span>
+                  <span>C: {Math.round(food.carbs)}g</span>
+                  <span className="text-gray-400">|</span>
+                  <span>F: {Math.round(food.fat)}g</span>
+                </div>
+                <div className="text-xs text-blue-600 font-medium">
+                  ⏱️ Recently added • {food.servingSize}{food.servingUnit} per serving
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!query && recentFoods.length === 0 && (
         <div className="text-center py-12">
           <svg className="w-16 h-16 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <p className="text-gray-400 font-medium">Start typing to search</p>
+          <p className="text-sm text-gray-400 mt-1">Your recent foods will appear here</p>
         </div>
       )}
 

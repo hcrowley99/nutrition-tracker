@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { calculateDailyTotals, calculateProgress, getTodayDate, formatDate } from './utils/calculations';
+import { addToRecentFoods } from './utils/recentFoods';
 import GoalsSetting from './components/GoalsSetting';
 import DailyProgress from './components/DailyProgress';
 import FoodSearch from './components/FoodSearch';
@@ -67,6 +68,22 @@ function App() {
     };
 
     setLoggedFoods([...loggedFoods, newFood]);
+
+    // Track in recent foods (store per-serving values for quick re-add)
+    addToRecentFoods({
+      fdcId: loggedFood.fdcId,
+      name: loggedFood.name,
+      brandName: loggedFood.brandName,
+      calories: loggedFood.calories / loggedFood.quantity,
+      protein: loggedFood.protein / loggedFood.quantity,
+      carbs: loggedFood.carbs / loggedFood.quantity,
+      fat: loggedFood.fat / loggedFood.quantity,
+      fiber: (loggedFood.fiber || 0) / loggedFood.quantity,
+      servingSize: loggedFood.servingSize,
+      servingUnit: loggedFood.servingUnit,
+      dataType: loggedFood.dataType,
+    });
+
     setSelectedFood(null); // Close modal
   };
 
