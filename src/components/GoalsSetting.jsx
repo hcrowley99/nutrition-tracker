@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import GoalCalculator from './GoalCalculator';
 
 /**
  * Goals Setting Component - Enhanced Design
@@ -6,6 +7,7 @@ import { useState } from 'react';
  */
 export default function GoalsSetting({ goals, onSaveGoals, onClose }) {
   const [localGoals, setLocalGoals] = useState(goals);
+  const [showCalculator, setShowCalculator] = useState(false);
 
   const handleChange = (nutrient, value) => {
     const numValue = parseFloat(value) || 0;
@@ -32,6 +34,25 @@ export default function GoalsSetting({ goals, onSaveGoals, onClose }) {
         <h2 className="text-3xl font-bold text-gray-900 mb-6">
           Set Your Daily Goals
         </h2>
+
+        {/* Calculator Button */}
+        <button
+          type="button"
+          onClick={() => setShowCalculator(true)}
+          className="w-full mb-5 px-6 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-2xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2"
+        >
+          <span className="text-xl">🧮</span>
+          <span>Use Goal Calculator</span>
+        </button>
+
+        <div className="relative mb-5">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500 font-medium">or enter manually</span>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {nutrients.map(({ key, label, unit, step, icon }) => (
@@ -77,6 +98,17 @@ export default function GoalsSetting({ goals, onSaveGoals, onClose }) {
           💡 Recommended: 2000 kcal, 150g protein, 200g carbs, 65g fat, 30g fiber
         </p>
       </div>
+
+      {/* Goal Calculator Modal */}
+      {showCalculator && (
+        <GoalCalculator
+          onSaveGoals={(goals) => {
+            setLocalGoals(goals);
+            setShowCalculator(false);
+          }}
+          onClose={() => setShowCalculator(false)}
+        />
+      )}
     </div>
   );
 }
