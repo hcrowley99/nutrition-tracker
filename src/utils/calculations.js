@@ -9,14 +9,14 @@ export function calculateDailyTotals(loggedFoods, date) {
   // Filter foods for the specific date
   const foodsForDate = loggedFoods.filter(food => food.date === date);
 
-  // Sum up all nutrients
+  // Sum up all nutrients (already adjusted for quantity when logged)
   const totals = foodsForDate.reduce(
     (acc, food) => ({
-      calories: acc.calories + (food.calories * food.quantity),
-      protein: acc.protein + (food.protein * food.quantity),
-      carbs: acc.carbs + (food.carbs * food.quantity),
-      fat: acc.fat + (food.fat * food.quantity),
-      fiber: acc.fiber + ((food.fiber || 0) * food.quantity),
+      calories: acc.calories + food.calories,
+      protein: acc.protein + food.protein,
+      carbs: acc.carbs + food.carbs,
+      fat: acc.fat + food.fat,
+      fiber: acc.fiber + (food.fiber || 0),
     }),
     { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 }
   );
