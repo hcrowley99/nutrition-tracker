@@ -1,14 +1,62 @@
-# Nutrition Tracker - Session Notes
+# MaddiGPT - Session Notes
 
 ## Current Status (January 2026)
 
 ### App Overview
+- **App Name:** MaddiGPT
 - **Live URL:** https://hanks-nutrition-tracker.netlify.app/
 - **GitHub:** https://github.com/hcrowley99/nutrition-tracker
 - **Tech Stack:** React + Vite, Tailwind CSS, USDA FoodData Central API, Open Food Facts (barcode)
 - **Deployment:** Netlify (auto-deploys from GitHub main branch)
 
-### Recently Implemented Features (This Session)
+### January 14, 2026 Session
+
+#### 1. App Rebranding ✅
+- **Change:** Renamed app from "NutriTrack" to "MaddiGPT"
+- **Files:** `src/App.jsx`, `index.html`
+
+#### 2. Goal Calculator Improvements ✅
+- **Change:** Goal Calculator now opens by default (instead of manual entry)
+- **Feature:** Added imperial/metric unit toggle
+- **Default:** Imperial units (lbs, ft/in)
+- **Files:** `src/components/GoalCalculator.jsx`, `src/components/GoalsSetting.jsx`
+
+#### 3. Food Title Fix ✅
+- **Issue:** Today's Foods list only showed brand name, not food name
+- **Fix:** Changed `food.foodName` to `food.name` in FoodList
+- **File:** `src/components/FoodList.jsx`
+
+#### 4. Seamless Food Logging ✅
+Focused on making food logging more intuitive:
+
+**Quick Portion Presets** (FoodLogger.jsx)
+- Tap buttons for ½, 1, 1.5, 2 servings
+- Smart presets based on unit type (4 oz, 100g, 1 cup, ½ cup)
+- New file: `src/utils/portionPresets.js`
+
+**Stepper Buttons** (FoodLogger.jsx)
+- +/- buttons for easier quantity adjustment
+- Smart step sizes: 10g for grams, 0.25 for cups, 0.5 for oz
+
+**Category Filters** (FoodSearch.jsx)
+- Filter chips: All | Generic | Branded
+- Generic = USDA reference foods, Branded = commercial products
+
+**Smart Search Ranking** (useFoodSearch.js)
+- Results sorted by relevance
+- Exact matches first, simpler names ranked higher
+- New file: `src/utils/searchRanking.js`
+
+**Popular Foods Suggestions** (FoodSearch.jsx)
+- Empty state shows tappable chips: Chicken, Banana, Rice, Eggs, Oatmeal, Salmon
+- One tap pre-fills search
+
+**Faster Search**
+- Reduced debounce from 500ms to 300ms
+
+---
+
+### Previous Session Features
 
 #### 1. Barcode Scanner Fix ✅
 - **Issue:** Scanner wasn't detecting barcodes
@@ -69,14 +117,17 @@
 ```
 
 ### Known Working Features
-- ✅ Food search (USDA database)
+- ✅ Food search (USDA database) with smart ranking
+- ✅ Category filters (Generic/Branded)
+- ✅ Quick portion presets & stepper buttons
 - ✅ Custom food entry
 - ✅ Barcode scanning (Open Food Facts)
 - ✅ Daily progress tracking with calorie ring
 - ✅ Weekly/monthly summary views
 - ✅ Date navigation
-- ✅ Goals setting (manual + calculator)
+- ✅ Goals setting (calculator default, imperial/metric toggle)
 - ✅ Recent foods quick-add
+- ✅ Popular foods suggestions
 - ✅ Copy from prior days
 - ✅ Unit conversion
 - ✅ Apple-inspired design throughout
@@ -111,10 +162,15 @@
 
 ### Features to Verify on iPhone
 1. **Barcode Scanner:** Point at product barcode (UPC-A/EAN-13)
-2. **Goal Calculator:** Complete all 3 steps with sample data
+2. **Goal Calculator:** Verify opens by default, test imperial/metric toggle
 3. **Recent Foods:** Add 5+ foods, verify they appear
 4. **Copy Function:** Log foods on multiple days, copy between dates
 5. **Unit Conversion:** Try g→oz, ml→cups conversions
+6. **Portion Presets:** Tap preset buttons, verify quantity updates
+7. **Stepper Buttons:** Use +/- to adjust amounts
+8. **Category Filters:** Search "chicken", toggle Generic/Branded filters
+9. **Popular Foods:** Clear search, tap a suggested food chip
+10. **Food Titles:** Verify food names show in Today's Foods list
 
 ### Edge Cases to Test
 - Empty states (no foods, no recent, no prior days)
@@ -147,27 +203,29 @@
 ```
 src/
 ├── components/
-│   ├── BarcodeScanner.jsx       [Fixed barcode detection]
+│   ├── BarcodeScanner.jsx       [Barcode detection]
 │   ├── CalorieRing.jsx           [SVG circular progress]
-│   ├── CopyFromDay.jsx           [NEW - Copy foods modal]
+│   ├── CopyFromDay.jsx           [Copy foods modal]
 │   ├── CustomFoodEntry.jsx       [Manual food entry]
 │   ├── DailyProgress.jsx         [Calorie ring + macros]
-│   ├── FoodList.jsx              [Today's logged foods]
-│   ├── FoodLogger.jsx            [Updated - Unit conversion]
-│   ├── FoodSearch.jsx            [Updated - Recent foods]
-│   ├── GoalCalculator.jsx        [NEW - 3-step calculator]
-│   ├── GoalsSetting.jsx          [Updated - Calculator button]
+│   ├── FoodList.jsx              [Today's logged foods - fixed title]
+│   ├── FoodLogger.jsx            [Portion presets, steppers, unit conversion]
+│   ├── FoodSearch.jsx            [Search, filters, recent foods, popular suggestions]
+│   ├── GoalCalculator.jsx        [3-step calculator, imperial/metric toggle]
+│   ├── GoalsSetting.jsx          [Calculator opens by default]
 │   └── SummaryView.jsx           [Weekly/monthly stats]
 ├── hooks/
-│   ├── useFoodSearch.js          [Debounced USDA search]
+│   ├── useFoodSearch.js          [Search with ranking, 300ms debounce]
 │   └── useLocalStorage.js        [Persist to localStorage]
 ├── utils/
 │   ├── api.js                    [USDA + Open Food Facts]
 │   ├── calculations.js           [Nutrition math]
-│   ├── goalCalculations.js       [NEW - BMR/TDEE formulas]
-│   ├── recentFoods.js            [NEW - Recent foods manager]
-│   └── unitConversions.js        [NEW - Unit conversion]
-└── App.jsx                       [Main - Updated with new features]
+│   ├── goalCalculations.js       [BMR/TDEE formulas]
+│   ├── portionPresets.js         [Smart portion presets + step sizes]
+│   ├── recentFoods.js            [Recent foods manager]
+│   ├── searchRanking.js          [Relevance scoring for search]
+│   └── unitConversions.js        [Unit conversion logic]
+└── App.jsx                       [Main app - MaddiGPT branding]
 ```
 
 ## API Keys & Environment
@@ -194,4 +252,4 @@ git push origin main
 6. Check GitHub issues or plan document for next tasks
 
 ## Last Updated
-January 13, 2026
+January 14, 2026
