@@ -1,3 +1,5 @@
+import { normalizeUnit } from './unitConversions';
+
 // Get API key from environment variables
 const API_KEY = import.meta.env.VITE_USDA_API_KEY;
 const BASE_URL = 'https://api.nal.usda.gov/fdc/v1';
@@ -45,7 +47,7 @@ export async function searchFoods(query) {
         fat: getNutrient('Total lipid (fat)'),
         fiber: getNutrient('Fiber, total dietary'),
         servingSize: food.servingSize || 100,
-        servingUnit: food.servingSizeUnit || 'g',
+        servingUnit: normalizeUnit(food.servingSizeUnit) || 'g',
         dataType: food.dataType // Survey (FNDDS) or Branded
       };
     });
@@ -133,7 +135,7 @@ export async function lookupFoodByBarcode(barcode) {
       fat: Math.round(nutriments.fat_100g || 0),
       fiber: Math.round(nutriments.fiber_100g || 0),
       servingSize: product.serving_quantity || 100,
-      servingUnit: product.serving_quantity_unit || 'g',
+      servingUnit: normalizeUnit(product.serving_quantity_unit) || 'g',
       dataType: 'Barcode',
       barcode: barcode,
       imageUrl: product.image_url || null,

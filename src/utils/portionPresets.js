@@ -3,7 +3,7 @@
  * Generates smart portion presets based on food type and serving unit
  */
 
-import { isWeightUnit, isVolumeUnit } from './unitConversions';
+import { isWeightUnit, isVolumeUnit, normalizeUnit } from './unitConversions';
 
 /**
  * Get portion presets for a food item
@@ -12,7 +12,7 @@ import { isWeightUnit, isVolumeUnit } from './unitConversions';
  */
 export function getPortionPresets(food) {
   const presets = [];
-  const baseUnit = food.servingUnit;
+  const baseUnit = normalizeUnit(food.servingUnit);
   const baseSize = food.servingSize;
 
   // Standard serving multiples (always available)
@@ -44,21 +44,26 @@ export function getPortionPresets(food) {
 
 /**
  * Get smart step size for quantity adjustments based on unit
- * @param {string} unit - The current unit
+ * @param {string} unit - The current unit (will be normalized)
  * @returns {number} Appropriate step size for the unit
  */
 export function getStepSize(unit) {
+  const normalized = normalizeUnit(unit);
   const steps = {
     g: 10,
     oz: 0.5,
     lb: 0.25,
     kg: 0.1,
+    mg: 100,
     ml: 25,
     cup: 0.25,
     tbsp: 0.5,
     tsp: 0.5,
     'fl oz': 1,
     l: 0.1,
+    pint: 0.5,
+    quart: 0.25,
+    gallon: 0.25,
   };
-  return steps[unit] || 1;
+  return steps[normalized] || 1;
 }
