@@ -134,9 +134,9 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
 
   // Helper to get bar color
   const getBarColor = (calories) => {
-    if (!calories) return 'bg-gray-300';
+    if (!calories) return 'bg-gray-600';
     const percentage = (calories / goals.calories) * 100;
-    if (percentage >= 90 && percentage <= 110) return 'bg-green-500';
+    if (percentage >= 90 && percentage <= 110) return 'bg-green-900/400';
     if (percentage > 110) return 'bg-red-500';
     return 'bg-yellow-500';
   };
@@ -145,12 +145,12 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
   const getTrendArrow = (value, target) => {
     const percentage = (value / target) * 100;
     if (percentage >= 90 && percentage <= 110) {
-      return <span className="text-green-600">●</span>;
+      return <span className="text-green-400">●</span>;
     }
     if (percentage < 90) {
       return <span className="text-yellow-600">↓</span>;
     }
-    return <span className="text-red-600">↑</span>;
+    return <span className="text-red-400">↑</span>;
   };
 
   const viewTitle = viewType === 'weekly' ? 'Weekly Summary' : 'Monthly Summary';
@@ -159,25 +159,25 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <h2 className="text-xl font-bold text-gray-800 mb-1">{viewTitle}</h2>
-        <p className="text-sm text-gray-600">{periodLabel}</p>
+      <div className="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 p-4">
+        <h2 className="text-xl font-bold text-white mb-1">{viewTitle}</h2>
+        <p className="text-sm text-gray-500">{periodLabel}</p>
       </div>
 
       {/* Aggregate Statistics */}
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Summary Statistics</h3>
+      <div className="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 p-4">
+        <h3 className="text-lg font-semibold text-white mb-4">Summary Statistics</h3>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="bg-blue-50 rounded-lg p-3">
-            <p className="text-xs text-gray-600 mb-1">Avg Calories/Day</p>
-            <p className="text-2xl font-bold text-blue-600">{stats.avgCalories}</p>
+          <div className="bg-blue-900/40 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">Avg Calories/Day</p>
+            <p className="text-2xl font-bold text-blue-400">{stats.avgCalories}</p>
             <p className="text-xs text-gray-500">Goal: {goals.calories}</p>
           </div>
 
-          <div className="bg-green-50 rounded-lg p-3">
-            <p className="text-xs text-gray-600 mb-1">Days On Track</p>
-            <p className="text-2xl font-bold text-green-600">
+          <div className="bg-green-900/40 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">Days On Track</p>
+            <p className="text-2xl font-bold text-green-400">
               {stats.daysOnTrack}/{dailyData.filter(d => d.hasData).length}
             </p>
             <p className="text-xs text-gray-500">
@@ -189,44 +189,44 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="bg-purple-50 rounded-lg p-3">
-            <p className="text-xs text-gray-600 mb-1">Current Streak</p>
-            <p className="text-2xl font-bold text-purple-600">{stats.streak}</p>
+          <div className="bg-purple-900/40 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">Current Streak</p>
+            <p className="text-2xl font-bold text-purple-400">{stats.streak}</p>
             <p className="text-xs text-gray-500">days</p>
           </div>
 
-          <div className="bg-orange-50 rounded-lg p-3">
-            <p className="text-xs text-gray-600 mb-1">Total Calories</p>
-            <p className="text-2xl font-bold text-orange-600">{stats.totalCalories.toLocaleString()}</p>
+          <div className="bg-orange-900/40 rounded-lg p-3">
+            <p className="text-xs text-gray-500 mb-1">Total Calories</p>
+            <p className="text-2xl font-bold text-orange-400">{stats.totalCalories.toLocaleString()}</p>
             <p className="text-xs text-gray-500">{periodLabel.toLowerCase()}</p>
           </div>
         </div>
 
         {/* Average Macros */}
-        <div className="border-t border-gray-200 pt-4">
-          <p className="text-sm font-semibold text-gray-700 mb-3">Average Daily Macros</p>
+        <div className="border-t border-gray-600 pt-4">
+          <p className="text-sm font-semibold text-gray-300 mb-3">Average Daily Macros</p>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Protein</span>
-              <span className="font-semibold text-gray-800">
+              <span className="text-gray-500">Protein</span>
+              <span className="font-semibold text-white">
                 {getTrendArrow(stats.avgProtein, goals.protein)} {stats.avgProtein}g
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Carbs</span>
-              <span className="font-semibold text-gray-800">
+              <span className="text-gray-500">Carbs</span>
+              <span className="font-semibold text-white">
                 {getTrendArrow(stats.avgCarbs, goals.carbs)} {stats.avgCarbs}g
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Fat</span>
-              <span className="font-semibold text-gray-800">
+              <span className="text-gray-500">Fat</span>
+              <span className="font-semibold text-white">
                 {getTrendArrow(stats.avgFat, goals.fat)} {stats.avgFat}g
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Fiber</span>
-              <span className="font-semibold text-gray-800">
+              <span className="text-gray-500">Fiber</span>
+              <span className="font-semibold text-white">
                 {getTrendArrow(stats.avgFiber, goals.fiber)} {stats.avgFiber}g
               </span>
             </div>
@@ -235,18 +235,18 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
 
         {/* Highest/Lowest Days */}
         {stats.highestDay && stats.lowestDay && (
-          <div className="border-t border-gray-200 pt-4 mt-4">
-            <p className="text-sm font-semibold text-gray-700 mb-3">Highlights</p>
+          <div className="border-t border-gray-600 pt-4 mt-4">
+            <p className="text-sm font-semibold text-gray-300 mb-3">Highlights</p>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Highest Day</span>
-                <span className="font-semibold text-red-600">
+                <span className="text-gray-500">Highest Day</span>
+                <span className="font-semibold text-red-400">
                   {formatDayLabel(stats.highestDay.date)}: {Math.round(stats.highestDay.totals.calories)} cal
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">Lowest Day</span>
-                <span className="font-semibold text-blue-600">
+                <span className="text-gray-500">Lowest Day</span>
+                <span className="font-semibold text-blue-400">
                   {formatDayLabel(stats.lowestDay.date)}: {Math.round(stats.lowestDay.totals.calories)} cal
                 </span>
               </div>
@@ -256,25 +256,25 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
       </div>
 
       {/* Daily Breakdown */}
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Daily Breakdown</h3>
+      <div className="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 p-4">
+        <h3 className="text-lg font-semibold text-white mb-4">Daily Breakdown</h3>
 
         <div className="space-y-3">
           {dailyData.map((day) => (
-            <div key={day.date} className="border-b border-gray-100 pb-3 last:border-0">
+            <div key={day.date} className="border-b border-gray-700 pb-3 last:border-0">
               <div className="flex justify-between items-center mb-2">
                 <div>
-                  <p className="text-sm font-medium text-gray-800">
+                  <p className="text-sm font-medium text-white">
                     {formatDayLabel(day.date)}
                   </p>
                   {day.date === getTodayDate() && (
-                    <span className="text-xs text-blue-600 font-medium">Today</span>
+                    <span className="text-xs text-blue-400 font-medium">Today</span>
                   )}
                 </div>
                 <div className="text-right">
                   {day.hasData ? (
                     <>
-                      <p className="text-sm font-bold text-gray-800">
+                      <p className="text-sm font-bold text-white">
                         {Math.round(day.totals.calories)} cal
                       </p>
                       <p className="text-xs text-gray-500">
@@ -284,13 +284,13 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
                       </p>
                     </>
                   ) : (
-                    <p className="text-sm text-gray-400">No data</p>
+                    <p className="text-sm text-gray-500">No data</p>
                   )}
                 </div>
               </div>
 
               {/* Progress Bar */}
-              <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+              <div className="w-full bg-gray-600 rounded-full h-2.5 overflow-hidden">
                 <div
                   className={`h-full transition-all duration-300 ${getBarColor(day.totals.calories)}`}
                   style={{ width: `${getBarWidth(day.totals.calories)}%` }}
@@ -301,7 +301,7 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
                 <p className="text-xs text-gray-500 mt-1">
                   {Math.round((day.totals.calories / goals.calories) * 100)}% of goal
                   {day.isOnTrack && (
-                    <span className="text-green-600 ml-2">✓ On track</span>
+                    <span className="text-green-400 ml-2">✓ On track</span>
                   )}
                 </p>
               )}
@@ -311,14 +311,14 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
       </div>
 
       {/* Legend */}
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <div className="flex flex-wrap gap-4 text-xs text-gray-600">
+      <div className="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 p-4">
+        <div className="flex flex-wrap gap-4 text-xs text-gray-500">
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
             <span>Under goal</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-green-900/400 rounded-full"></div>
             <span>On track (90-110%)</span>
           </div>
           <div className="flex items-center gap-1">

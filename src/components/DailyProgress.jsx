@@ -13,8 +13,8 @@ export default function DailyProgress({ totals, goals, progress }) {
       unit: 'g',
       icon: '💪',
       gradient: 'from-cyan-500 to-teal-400',
-      bgGradient: 'from-cyan-50 to-teal-50',
-      borderColor: 'border-cyan-200'
+      bgGradient: 'from-cyan-900/40 to-teal-900/40',
+      borderColor: 'border-cyan-700'
     },
     {
       key: 'carbs',
@@ -22,8 +22,8 @@ export default function DailyProgress({ totals, goals, progress }) {
       unit: 'g',
       icon: '🌾',
       gradient: 'from-yellow-400 to-amber-300',
-      bgGradient: 'from-yellow-50 to-amber-50',
-      borderColor: 'border-yellow-200'
+      bgGradient: 'from-yellow-900/40 to-amber-900/40',
+      borderColor: 'border-yellow-700'
     },
     {
       key: 'fat',
@@ -31,8 +31,8 @@ export default function DailyProgress({ totals, goals, progress }) {
       unit: 'g',
       icon: '🥑',
       gradient: 'from-green-400 to-emerald-400',
-      bgGradient: 'from-green-50 to-emerald-50',
-      borderColor: 'border-green-200'
+      bgGradient: 'from-green-900/40 to-emerald-900/40',
+      borderColor: 'border-green-700'
     },
     {
       key: 'fiber',
@@ -40,13 +40,13 @@ export default function DailyProgress({ totals, goals, progress }) {
       unit: 'g',
       icon: '🌿',
       gradient: 'from-blue-500 to-blue-400',
-      bgGradient: 'from-blue-50 to-blue-50',
-      borderColor: 'border-blue-200'
+      bgGradient: 'from-blue-900/40 to-blue-900/40',
+      borderColor: 'border-blue-700'
     },
   ];
 
   return (
-    <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-card p-6 mb-6 border border-white/50">
+    <div className="bg-gray-800/90 backdrop-blur-lg rounded-3xl shadow-card p-6 mb-6 border border-gray-700">
       {/* Calorie Ring - Hero Element */}
       <div className="flex justify-center mb-8">
         <CalorieRing current={totals.calories} goal={goals.calories} />
@@ -67,7 +67,7 @@ export default function DailyProgress({ totals, goals, progress }) {
               {/* Icon and Label */}
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-xl">{icon}</span>
-                <span className="text-sm font-semibold text-gray-700">{label}</span>
+                <span className="text-sm font-semibold text-gray-200">{label}</span>
               </div>
 
               {/* Values */}
@@ -76,12 +76,12 @@ export default function DailyProgress({ totals, goals, progress }) {
                   <span className={`text-2xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
                     {value}
                   </span>
-                  <span className="text-xs text-gray-500">/ {goalValue}{unit}</span>
+                  <span className="text-xs text-gray-400">/ {goalValue}{unit}</span>
                 </div>
               </div>
 
               {/* Mini Progress Bar */}
-              <div className="w-full bg-white/50 rounded-full h-1.5 overflow-hidden mb-2">
+              <div className="w-full bg-gray-700/50 rounded-full h-1.5 overflow-hidden mb-2">
                 <div
                   className={`h-full bg-gradient-to-r ${gradient} rounded-full transition-all duration-500`}
                   style={{ width: `${percentage}%` }}
@@ -89,7 +89,7 @@ export default function DailyProgress({ totals, goals, progress }) {
               </div>
 
               {/* Percentage */}
-              <div className="text-xs font-medium text-gray-600">
+              <div className="text-xs font-medium text-gray-400">
                 {Math.round(progress[key])}%
               </div>
             </div>

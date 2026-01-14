@@ -64,7 +64,7 @@ export default function CalorieRing({ current, goal }) {
             cy={center}
             r={radius}
             fill="none"
-            stroke="#E5E7EB"
+            stroke="#374151"
             strokeWidth={strokeWidth}
           />
 
@@ -92,7 +92,7 @@ export default function CalorieRing({ current, goal }) {
             <div className="text-5xl font-bold bg-gradient-to-br from-red-500 to-pink-500 bg-clip-text text-transparent mb-1">
               {Math.round(current)}
             </div>
-            <div className="text-sm text-gray-500 font-medium">
+            <div className="text-sm text-gray-300 font-medium">
               of {goal}
             </div>
             <div className="text-xs text-gray-400 mt-0.5">
@@ -104,10 +104,10 @@ export default function CalorieRing({ current, goal }) {
 
       {/* Progress percentage */}
       <div className="mt-4 text-center">
-        <div className="text-lg font-semibold text-gray-700">
+        <div className="text-lg font-semibold text-gray-200">
           {Math.round(percentage)}%
         </div>
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-gray-400">
           of daily goal
         </div>
       </div>

@@ -115,7 +115,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-cyan-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800">
       {/* Header */}
       <header className="bg-gradient-to-r from-blue-500 via-blue-600 to-cyan-500 text-white shadow-2xl">
         <div className="max-w-2xl mx-auto px-4 py-5">

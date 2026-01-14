@@ -118,16 +118,16 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-100 animate-scale-in">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div className="bg-gray-800 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-700 animate-scale-in">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-3xl font-bold text-white">
             🧮 Goal Calculator
           </h2>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200"
+            className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700 rounded-xl transition-all duration-200"
             aria-label="Close"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,13 +143,13 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
                 step >= s
                   ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
-                  : 'bg-gray-200 text-gray-500'
+                  : 'bg-gray-700 text-gray-400'
               }`}>
                 {s}
               </div>
               {s < 3 && (
                 <div className={`w-12 h-1 mx-1 transition-all duration-300 ${
-                  step > s ? 'bg-gradient-to-r from-blue-500 to-cyan-500' : 'bg-gray-200'
+                  step > s ? 'bg-gradient-to-r from-blue-500 to-cyan-500' : 'bg-gray-700'
                 }`} />
               )}
             </div>
@@ -159,15 +159,15 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
         {/* Step 1: User Metrics */}
         {step === 1 && (
           <div className="space-y-5">
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl p-5 border-2 border-blue-100">
-              <p className="text-sm text-blue-900 font-medium">
+            <div className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 rounded-2xl p-5 border-2 border-blue-700">
+              <p className="text-sm text-blue-300 font-medium">
                 Enter your metrics to calculate personalized nutrition goals using the Mifflin-St Jeor formula
               </p>
             </div>
 
             {/* Unit System Toggle */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-gray-300 mb-3">
                 Unit System
               </label>
               <div className="flex gap-3">
@@ -177,7 +177,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
                   className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
                     unitSystem === 'imperial'
                       ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   Imperial (lbs, ft/in)
@@ -188,7 +188,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
                   className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
                     unitSystem === 'metric'
                       ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   Metric (kg, cm)
@@ -198,14 +198,14 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
 
             {/* Weight */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-300 mb-2">
                 Weight ({unitSystem === 'imperial' ? 'lbs' : 'kg'})
               </label>
               <input
                 type="number"
                 value={metrics.weight}
                 onChange={(e) => setMetrics({ ...metrics, weight: e.target.value })}
-                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
+                className="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-xl focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 text-lg font-medium text-white placeholder-gray-400 transition-all duration-200"
                 placeholder={unitSystem === 'imperial' ? '150' : '70'}
                 step="0.1"
                 min="0"
@@ -215,7 +215,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
 
             {/* Height */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-300 mb-2">
                 Height ({unitSystem === 'imperial' ? 'ft / in' : 'cm'})
               </label>
               {unitSystem === 'imperial' ? (
@@ -225,25 +225,25 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
                       type="number"
                       value={metrics.heightFeet}
                       onChange={(e) => setMetrics({ ...metrics, heightFeet: e.target.value })}
-                      className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
+                      className="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-xl focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 text-lg font-medium text-white placeholder-gray-400 transition-all duration-200"
                       placeholder="5"
                       min="0"
                       max="8"
                     />
-                    <span className="text-xs text-gray-500 mt-1 block text-center">feet</span>
+                    <span className="text-xs text-gray-400 mt-1 block text-center">feet</span>
                   </div>
                   <div className="flex-1">
                     <input
                       type="number"
                       value={metrics.heightInches}
                       onChange={(e) => setMetrics({ ...metrics, heightInches: e.target.value })}
-                      className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
+                      className="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-xl focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 text-lg font-medium text-white placeholder-gray-400 transition-all duration-200"
                       placeholder="10"
                       min="0"
                       max="11"
                       step="0.5"
                     />
-                    <span className="text-xs text-gray-500 mt-1 block text-center">inches</span>
+                    <span className="text-xs text-gray-400 mt-1 block text-center">inches</span>
                   </div>
                 </div>
               ) : (
@@ -251,7 +251,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
                   type="number"
                   value={metrics.height}
                   onChange={(e) => setMetrics({ ...metrics, height: e.target.value })}
-                  className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
+                  className="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-xl focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 text-lg font-medium text-white placeholder-gray-400 transition-all duration-200"
                   placeholder="175"
                   step="0.1"
                   min="0"
@@ -262,14 +262,14 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
 
             {/* Age */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-300 mb-2">
                 🎂 Age (years)
               </label>
               <input
                 type="number"
                 value={metrics.age}
                 onChange={(e) => setMetrics({ ...metrics, age: e.target.value })}
-                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
+                className="w-full px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-xl focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 text-lg font-medium text-white placeholder-gray-400 transition-all duration-200"
                 placeholder="30"
                 min="0"
                 required
@@ -278,7 +278,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
 
             {/* Sex */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-gray-300 mb-3">
                 👤 Sex
               </label>
               <div className="flex gap-3">
@@ -288,7 +288,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
                   className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
                     metrics.sex === 'male'
                       ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   Male
@@ -299,7 +299,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
                   className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
                     metrics.sex === 'female'
                       ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   Female
@@ -309,7 +309,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
 
             {/* Activity Level */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-3">
+              <label className="block text-sm font-semibold text-gray-300 mb-3">
                 🏃 Activity Level
               </label>
               <div className="space-y-2">
@@ -321,12 +321,12 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
                     className={`w-full text-left py-3 px-4 rounded-xl font-medium transition-all duration-200 ${
                       metrics.activityLevel === level.key
                         ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                     }`}
                   >
                     <div className="font-semibold">{level.label}</div>
                     <div className={`text-sm ${
-                      metrics.activityLevel === level.key ? 'text-white/80' : 'text-gray-500'
+                      metrics.activityLevel === level.key ? 'text-white/80' : 'text-gray-400'
                     }`}>
                       {level.description}
                     </div>
@@ -340,8 +340,8 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
         {/* Step 2: Goal Selection */}
         {step === 2 && (
           <div className="space-y-5">
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl p-5 border-2 border-blue-100">
-              <p className="text-sm text-blue-900 font-medium">
+            <div className="bg-gradient-to-br from-blue-900/40 to-cyan-900/40 rounded-2xl p-5 border-2 border-blue-700">
+              <p className="text-sm text-blue-300 font-medium">
                 🎯 Choose your primary goal to get optimal macro distribution
               </p>
             </div>
@@ -355,7 +355,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
                   className={`w-full text-left py-4 px-5 rounded-2xl font-medium transition-all duration-200 ${
                     selectedGoal === preset.key
                       ? 'bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-xl scale-[1.02]'
-                      : 'bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 text-gray-700 hover:border-blue-200 hover:shadow-md'
+                      : 'bg-gray-700 border-2 border-gray-600 text-gray-200 hover:border-blue-500 hover:shadow-md'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -363,12 +363,12 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
                     <div className="flex-1">
                       <div className="font-bold text-lg">{preset.label}</div>
                       <div className={`text-sm ${
-                        selectedGoal === preset.key ? 'text-white/80' : 'text-gray-500'
+                        selectedGoal === preset.key ? 'text-white/80' : 'text-gray-400'
                       }`}>
                         {preset.description}
                       </div>
                       <div className={`text-xs mt-1 ${
-                        selectedGoal === preset.key ? 'text-white/70' : 'text-gray-400'
+                        selectedGoal === preset.key ? 'text-white/70' : 'text-gray-500'
                       }`}>
                         {preset.detail}
                       </div>
@@ -383,56 +383,56 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
         {/* Step 3: Review & Confirm */}
         {step === 3 && calculatedGoals && (
           <div className="space-y-5">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50/50 rounded-2xl p-5 border-2 border-green-200">
-              <p className="text-sm text-green-900 font-medium">
+            <div className="bg-gradient-to-br from-green-900/40 to-emerald-900/40 rounded-2xl p-5 border-2 border-green-700">
+              <p className="text-sm text-green-300 font-medium">
                 ✅ Your personalized goals are ready! Review and save below.
               </p>
             </div>
 
             {/* Calculated Values */}
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-2xl p-5 border-2 border-gray-200">
-              <h3 className="font-bold text-gray-900 mb-4 text-lg">📊 Your Metrics</h3>
+            <div className="bg-gray-700/50 rounded-2xl p-5 border-2 border-gray-600">
+              <h3 className="font-bold text-white mb-4 text-lg">📊 Your Metrics</h3>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <div className="bg-white rounded-xl p-3 border border-blue-100">
-                  <p className="text-gray-600 font-medium">BMR</p>
-                  <p className="text-2xl font-bold text-blue-600">{calculatedGoals.bmr}</p>
-                  <p className="text-xs text-gray-400">calories/day at rest</p>
+                <div className="bg-gray-800 rounded-xl p-3 border border-blue-900/50">
+                  <p className="text-gray-400 font-medium">BMR</p>
+                  <p className="text-2xl font-bold text-blue-400">{calculatedGoals.bmr}</p>
+                  <p className="text-xs text-gray-500">calories/day at rest</p>
                 </div>
-                <div className="bg-white rounded-xl p-3 border border-cyan-100">
-                  <p className="text-gray-600 font-medium">TDEE</p>
-                  <p className="text-2xl font-bold text-cyan-600">{calculatedGoals.tdee}</p>
-                  <p className="text-xs text-gray-400">total daily expenditure</p>
+                <div className="bg-gray-800 rounded-xl p-3 border border-cyan-900/50">
+                  <p className="text-gray-400 font-medium">TDEE</p>
+                  <p className="text-2xl font-bold text-cyan-400">{calculatedGoals.tdee}</p>
+                  <p className="text-xs text-gray-500">total daily expenditure</p>
                 </div>
               </div>
             </div>
 
             {/* Goal Preview */}
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-2xl p-5 border-2 border-gray-200">
-              <h3 className="font-bold text-gray-900 mb-4 text-lg">🎯 Daily Goals</h3>
+            <div className="bg-gray-700/50 rounded-2xl p-5 border-2 border-gray-600">
+              <h3 className="font-bold text-white mb-4 text-lg">🎯 Daily Goals</h3>
               <div className="space-y-3">
-                <div className="bg-white rounded-xl p-4 border-2 border-red-100">
+                <div className="bg-gray-800 rounded-xl p-4 border-2 border-red-900/50">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-semibold text-gray-700">🔥 Calories</span>
+                    <span className="text-sm font-semibold text-gray-300">🔥 Calories</span>
                     <span className="text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
                       {calculatedGoals.calories}
                     </span>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-white rounded-xl p-3 border-2 border-cyan-100">
-                    <p className="text-xs text-gray-600 font-semibold mb-1">💪 Protein</p>
+                  <div className="bg-gray-800 rounded-xl p-3 border-2 border-cyan-900/50">
+                    <p className="text-xs text-gray-400 font-semibold mb-1">💪 Protein</p>
                     <p className="text-xl font-bold bg-gradient-to-r from-cyan-500 to-teal-400 bg-clip-text text-transparent">
                       {calculatedGoals.protein}g
                     </p>
                   </div>
-                  <div className="bg-white rounded-xl p-3 border-2 border-yellow-100">
-                    <p className="text-xs text-gray-600 font-semibold mb-1">🌾 Carbs</p>
+                  <div className="bg-gray-800 rounded-xl p-3 border-2 border-yellow-900/50">
+                    <p className="text-xs text-gray-400 font-semibold mb-1">🌾 Carbs</p>
                     <p className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-amber-300 bg-clip-text text-transparent">
                       {calculatedGoals.carbs}g
                     </p>
                   </div>
-                  <div className="bg-white rounded-xl p-3 border-2 border-green-100">
-                    <p className="text-xs text-gray-600 font-semibold mb-1">🥑 Fat</p>
+                  <div className="bg-gray-800 rounded-xl p-3 border-2 border-green-900/50">
+                    <p className="text-xs text-gray-400 font-semibold mb-1">🥑 Fat</p>
                     <p className="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
                       {calculatedGoals.fat}g
                     </p>
@@ -444,11 +444,11 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
         )}
 
         {/* Navigation Buttons */}
-        <div className="flex gap-3 mt-8 pt-6 border-t border-gray-200">
+        <div className="flex gap-3 mt-8 pt-6 border-t border-gray-700">
           {step > 1 && (
             <button
               onClick={handleBack}
-              className="px-6 py-3.5 bg-white border-2 border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 hover:shadow-md transition-all duration-200 active:scale-95"
+              className="px-6 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-xl text-gray-200 font-semibold hover:bg-gray-600 hover:shadow-md transition-all duration-200 active:scale-95"
             >
               ← Back
             </button>
@@ -471,7 +471,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
         </div>
 
         {/* Helper Text */}
-        <p className="text-xs text-gray-500 mt-5 text-center bg-gray-50 rounded-xl p-3">
+        <p className="text-xs text-gray-400 mt-5 text-center bg-gray-700 rounded-xl p-3">
           💡 Your metrics are saved locally for future calculations. You can switch between calculated and manual goals anytime.
         </p>
       </div>

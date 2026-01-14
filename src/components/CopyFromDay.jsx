@@ -63,17 +63,17 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden border border-gray-100 animate-scale-in">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+      <div className="bg-gray-800 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col border border-gray-700 animate-scale-in">
         {/* Header */}
-        <div className="p-6 border-b border-gray-200">
+        <div className="flex-shrink-0 p-6 border-b border-gray-600">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-bold text-white">
               📋 Copy from Prior Day
             </h2>
             <button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200"
+              className="p-2 text-gray-400 hover:text-gray-400 hover:bg-gray-700 rounded-xl transition-all duration-200"
               aria-label="Close"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,8 +95,8 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
         </div>
 
         {/* Date Selection */}
-        <div className="p-6 border-b border-gray-200">
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
+        <div className="flex-shrink-0 p-6 border-b border-gray-600">
+          <label className="block text-sm font-semibold text-gray-300 mb-3">
             📅 Select Source Date
           </label>
           {availableDates.length > 0 ? (
@@ -107,8 +107,8 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
                   onClick={() => setSourceDate(date)}
                   className={`py-3 px-4 rounded-xl font-semibold text-sm transition-all duration-200 ${
                     sourceDate === date
-                      ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-gradient-to-r from-blue-900/400 to-cyan-500 text-white shadow-lg'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
                 >
                   {formatDate(date)}
@@ -116,8 +116,8 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 bg-gray-50 rounded-2xl">
-              <p className="font-medium text-gray-700">No previous days with logged foods</p>
+            <div className="text-center py-8 bg-gray-700 rounded-2xl">
+              <p className="font-medium text-gray-300">No previous days with logged foods</p>
               <p className="text-sm text-gray-500 mt-1">Start logging foods to use this feature</p>
             </div>
           )}
@@ -125,14 +125,14 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
 
         {/* Foods List */}
         {sourceDate && sourceFoods.length > 0 && (
-          <div className="p-6 max-h-96 overflow-y-auto custom-scrollbar">
+          <div className="flex-1 min-h-0 p-6 overflow-y-auto custom-scrollbar">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-lg font-bold text-white">
                 Select Foods to Copy ({selectedFoodIds.size} selected)
               </h3>
               <button
                 onClick={toggleAll}
-                className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
+                className="text-sm text-blue-400 hover:text-blue-700 font-semibold"
               >
                 {selectedFoodIds.size === sourceFoods.length ? 'Deselect All' : 'Select All'}
               </button>
@@ -146,8 +146,8 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
                     key={food.id}
                     className={`block p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 ${
                       isSelected
-                        ? 'bg-blue-50 border-blue-400 shadow-md'
-                        : 'bg-gray-50 border-gray-200 hover:border-gray-300'
+                        ? 'bg-blue-900/40 border-blue-400 shadow-md'
+                        : 'bg-gray-700 border-gray-600 hover:border-gray-600'
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -155,18 +155,18 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => toggleFood(food.id)}
-                        className="mt-1 w-5 h-5 text-blue-600 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="mt-1 w-5 h-5 text-blue-400 rounded-lg focus:ring-2 focus:ring-blue-500"
                       />
                       <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900">{food.name}</h4>
+                        <h4 className="font-semibold text-white">{food.name}</h4>
                         {food.brandName && (
                           <p className="text-sm text-gray-500">{food.brandName}</p>
                         )}
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-sm text-gray-400 mt-1">
                           {food.quantity} × {food.servingSize}{food.servingUnit}
                         </p>
-                        <div className="flex gap-3 text-sm font-medium text-gray-700 mt-2">
-                          <span className="text-red-600">{Math.round(food.calories)} cal</span>
+                        <div className="flex gap-3 text-sm font-medium text-gray-300 mt-2">
+                          <span className="text-red-400">{Math.round(food.calories)} cal</span>
                           <span className="text-gray-400">|</span>
                           <span>P: {food.protein}g</span>
                           <span className="text-gray-400">|</span>
@@ -184,23 +184,23 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
         )}
 
         {sourceDate && sourceFoods.length === 0 && (
-          <div className="p-6 text-center bg-gray-50 rounded-2xl mx-6">
-            <p className="font-medium text-gray-700">No foods found for this date</p>
+          <div className="p-6 text-center bg-gray-700 rounded-2xl mx-6">
+            <p className="font-medium text-gray-300">No foods found for this date</p>
           </div>
         )}
 
         {/* Action Buttons */}
-        <div className="p-6 border-t border-gray-200 flex gap-3">
+        <div className="flex-shrink-0 p-6 border-t border-gray-600 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 px-6 py-3.5 bg-white border-2 border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 hover:shadow-md transition-all duration-200 active:scale-95"
+            className="flex-1 px-6 py-3.5 bg-gray-800 border-2 border-gray-600 rounded-xl text-gray-300 font-semibold hover:bg-gray-700 hover:shadow-md transition-all duration-200 active:scale-95"
           >
             Cancel
           </button>
           <button
             onClick={handleCopy}
             disabled={selectedFoodIds.size === 0}
-            className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-900/400 to-cyan-500 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
             Copy {selectedFoodIds.size} Food{selectedFoodIds.size !== 1 ? 's' : ''}
           </button>
@@ -211,15 +211,15 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
             width: 8px;
           }
           .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #1f2937;
             border-radius: 10px;
           }
           .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+            background: #4b5563;
             border-radius: 10px;
           }
           .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #6b7280;
           }
         `}</style>
       </div>
