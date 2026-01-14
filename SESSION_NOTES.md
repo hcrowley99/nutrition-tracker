@@ -7,7 +7,7 @@
 - **Live URL:** https://hanks-nutrition-tracker.netlify.app/
 - **GitHub:** https://github.com/hcrowley99/nutrition-tracker
 - **Tech Stack:** React + Vite, Tailwind CSS, USDA FoodData Central API, Open Food Facts (barcode)
-- **Deployment:** Netlify (auto-deploys from GitHub main branch)
+- **Deployment:** Netlify (auto-deploys currently OFF to manage credits - manual deploy required)
 
 ### January 14, 2026 Session
 
@@ -53,6 +53,37 @@ Focused on making food logging more intuitive:
 
 **Faster Search**
 - Reduced debounce from 500ms to 300ms
+
+#### 5. Unit Conversion Improvements ✅
+- **Issue:** USDA API returns non-standard unit codes (MLT, GRM, etc.)
+- **Fix:** Added `normalizeUnit()` function with comprehensive alias mapping
+- **Supported aliases:** grm→g, mlt→ml, oz/ounce→oz, plurals, etc.
+- **File:** `src/utils/unitConversions.js`
+
+#### 6. Dark Mode Conversion ✅
+- **Change:** Converted entire UI to dark mode color scheme
+- **Colors:** gray-800/900 backgrounds, white/gray-100 text, gray-700 inputs
+- **Files:** All 13 components updated
+
+#### 7. Modal Scrolling Fix ✅
+- **Issue:** Modals were cut off on mobile devices
+- **Fix:** Added `max-h-[90vh] overflow-y-auto` to all modal containers
+- **Pattern:** Flex layout with `flex-shrink-0` on headers/footers
+
+#### 8. Data Validation Precision ✅
+- **Goals inputs:** Step changed to 0.1 for single decimal precision
+- **Quantity inputs:** Step changed to 0.01 for two decimal precision
+
+#### 9. Dark Mode Contrast Fix ✅
+- **Issue:** Text in CustomFoodEntry inputs was black on dark background
+- **Fix:** Added `text-white placeholder-gray-400` to all inputs
+- **File:** `src/components/CustomFoodEntry.jsx`
+
+#### 10. Calorie Doubling Bug Fix ✅
+- **Issue:** Calorie ring showed 2x the correct value (e.g., 1748 instead of 874)
+- **Root cause:** `calculateDailyTotals` multiplied by quantity, but nutrients were already pre-calculated in FoodLogger
+- **Fix:** Removed redundant `* food.quantity` multiplication
+- **File:** `src/utils/calculations.js`
 
 ---
 
@@ -131,6 +162,7 @@ Focused on making food logging more intuitive:
 - ✅ Copy from prior days
 - ✅ Unit conversion
 - ✅ Apple-inspired design throughout
+- ✅ Dark mode UI with proper contrast
 
 ## Potential Future Enhancements
 
@@ -148,7 +180,7 @@ Focused on making food logging more intuitive:
 - [ ] Export data to CSV/PDF
 
 ### Possible Improvements
-- [ ] Dark mode toggle
+- [ ] Light/dark mode toggle (currently dark mode only)
 - [ ] Offline mode with service worker
 - [ ] Better error handling for API failures
 - [ ] Loading skeletons instead of spinners
