@@ -2,6 +2,16 @@ import { useState, useEffect } from 'react';
 import { useFoodSearch } from '../hooks/useFoodSearch';
 import { getRecentFoods, clearRecentFoods } from '../utils/recentFoods';
 
+// Popular foods for empty state suggestions
+const POPULAR_FOODS = [
+  { name: 'Chicken Breast', emoji: '🍗' },
+  { name: 'Banana', emoji: '🍌' },
+  { name: 'Rice', emoji: '🍚' },
+  { name: 'Eggs', emoji: '🥚' },
+  { name: 'Oatmeal', emoji: '🥣' },
+  { name: 'Salmon', emoji: '🐟' },
+];
+
 /**
  * Food Search Component - Enhanced Design
  * Search for foods in USDA database with Apple-inspired styling
@@ -10,6 +20,7 @@ export default function FoodSearch({ onSelectFood }) {
   const [query, setQuery] = useState('');
   const { results, loading, error } = useFoodSearch(query);
   const [recentFoods, setRecentFoods] = useState([]);
+  const [dataTypeFilter, setDataTypeFilter] = useState('all');
 
   // Load recent foods on mount
   useEffect(() => {
@@ -24,6 +35,14 @@ export default function FoodSearch({ onSelectFood }) {
     onSelectFood(food);
     setQuery(''); // Clear search after selection
   };
+
+  // Filter results based on dataType filter
+  const filteredResults = results.filter(food => {
+    if (dataTypeFilter === 'all') return true;
+    if (dataTypeFilter === 'generic') return food.dataType !== 'Branded';
+    if (dataTypeFilter === 'branded') return food.dataType === 'Branded';
+    return true;
+  });
 
   return (
     <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-card p-6 border border-white/50">
@@ -57,6 +76,29 @@ export default function FoodSearch({ onSelectFood }) {
         )}
       </div>
 
+      {/* Category Filters */}
+      {query && results.length > 0 && (
+        <div className="flex gap-2 mb-4">
+          {[
+            { key: 'all', label: 'All' },
+            { key: 'generic', label: 'Generic' },
+            { key: 'branded', label: 'Branded' },
+          ].map(filter => (
+            <button
+              key={filter.key}
+              onClick={() => setDataTypeFilter(filter.key)}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                dataTypeFilter === filter.key
+                  ? 'bg-blue-500 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Loading State */}
       {loading && (
         <div className="text-center py-12">
@@ -73,7 +115,7 @@ export default function FoodSearch({ onSelectFood }) {
       )}
 
       {/* Empty State */}
-      {!loading && !error && query.trim().length > 0 && results.length === 0 && (
+      {!loading && !error && query.trim().length > 0 && filteredResults.length === 0 && (
         <div className="text-center py-12">
           <svg className="w-16 h-16 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -139,19 +181,29 @@ export default function FoodSearch({ onSelectFood }) {
       )}
 
       {!query && recentFoods.length === 0 && (
-        <div className="text-center py-12">
-          <svg className="w-16 h-16 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="text-center py-8">
+          <svg className="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          <p className="text-gray-400 font-medium">Start typing to search</p>
-          <p className="text-sm text-gray-400 mt-1">Your recent foods will appear here</p>
+          <p className="text-gray-500 font-medium mb-4">Try searching for popular foods</p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {POPULAR_FOODS.map((food) => (
+              <button
+                key={food.name}
+                onClick={() => setQuery(food.name)}
+                className="px-4 py-2 bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-700 rounded-xl text-sm font-medium transition-all duration-200"
+              >
+                {food.emoji} {food.name}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
       {/* Results List */}
-      {!loading && results.length > 0 && (
+      {!loading && filteredResults.length > 0 && (
         <div className="space-y-3 max-h-[480px] overflow-y-auto pr-2 custom-scrollbar">
-          {results.map((food) => (
+          {filteredResults.map((food) => (
             <div
               key={food.fdcId}
               className="bg-white border-2 border-gray-100 rounded-2xl p-4 hover:border-blue-200 hover:shadow-md transition-all duration-200 hover:scale-[1.01]"

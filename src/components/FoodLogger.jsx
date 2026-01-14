@@ -5,6 +5,7 @@ import {
   getCompatibleUnits,
   formatConversionFactor
 } from '../utils/unitConversions';
+import { getPortionPresets, getStepSize } from '../utils/portionPresets';
 
 /**
  * Food Logger Component - Enhanced Design
@@ -63,6 +64,32 @@ export default function FoodLogger({ food, onAddFood, onCancel }) {
           )}
         </div>
 
+        {/* Quick Portion Presets */}
+        <div className="mb-5">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Quick Portions
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {getPortionPresets(food).map((preset, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setDisplayAmount(preset.amount);
+                  setDisplayUnit(preset.unit);
+                }}
+                className={`px-3 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                  displayAmount === preset.amount && displayUnit === preset.unit
+                    ? 'bg-blue-500 text-white shadow-md'
+                    : 'bg-gray-100 text-gray-700 hover:bg-blue-100 hover:text-blue-700'
+                }`}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Amount and Unit Input */}
           <div>
@@ -71,15 +98,31 @@ export default function FoodLogger({ food, onAddFood, onCancel }) {
               <span>Amount</span>
             </label>
             <div className="flex gap-3">
-              <input
-                type="number"
-                value={displayAmount}
-                onChange={(e) => setDisplayAmount(parseFloat(e.target.value) || 1)}
-                className="flex-1 px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md"
-                min="0.1"
-                step="0.1"
-                required
-              />
+              <div className="flex-1 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setDisplayAmount(Math.max(getStepSize(displayUnit), displayAmount - getStepSize(displayUnit)))}
+                  className="p-3.5 bg-gray-100 hover:bg-gray-200 rounded-xl font-bold text-xl text-gray-700 transition-all duration-200 active:scale-95"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  value={displayAmount}
+                  onChange={(e) => setDisplayAmount(parseFloat(e.target.value) || 1)}
+                  className="flex-1 px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200 shadow-sm focus:shadow-md text-center"
+                  min="0.1"
+                  step={getStepSize(displayUnit)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setDisplayAmount(displayAmount + getStepSize(displayUnit))}
+                  className="p-3.5 bg-gray-100 hover:bg-gray-200 rounded-xl font-bold text-xl text-gray-700 transition-all duration-200 active:scale-95"
+                >
+                  +
+                </button>
+              </div>
               {compatibleUnits.length > 1 ? (
                 <select
                   value={displayUnit}

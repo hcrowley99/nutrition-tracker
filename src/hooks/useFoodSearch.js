@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { searchFoods } from '../utils/api';
+import { rankSearchResults } from '../utils/searchRanking';
 
 /**
- * Custom hook for food search with debouncing
- * Waits 500ms after user stops typing before searching
+ * Custom hook for food search with debouncing and ranking
+ * Waits 300ms after user stops typing before searching
  *
  * @param {string} query - Search query
  * @returns {Object} - Search results, loading state, and error
@@ -24,20 +25,22 @@ export function useFoodSearch(query) {
     setLoading(true);
     setError(null);
 
-    // Debounce: wait 500ms after user stops typing
+    // Debounce: wait 300ms after user stops typing
     const timeoutId = setTimeout(async () => {
       try {
         const searchResults = await searchFoods(query);
-        setResults(searchResults);
+        // Rank results by relevance
+        const rankedResults = rankSearchResults(searchResults, query);
+        setResults(rankedResults);
         setLoading(false);
       } catch (err) {
         setError(err.message);
         setResults([]);
         setLoading(false);
       }
-    }, 500);
+    }, 300);
 
-    // Cleanup: cancel the timeout if query changes before 500ms
+    // Cleanup: cancel the timeout if query changes before 300ms
     return () => clearTimeout(timeoutId);
   }, [query]);
 
