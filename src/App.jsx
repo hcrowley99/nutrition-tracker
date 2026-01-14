@@ -120,7 +120,7 @@ function App() {
       <header className="bg-gradient-to-r from-blue-500 via-blue-600 to-cyan-500 text-white shadow-2xl">
         <div className="max-w-2xl mx-auto px-4 py-5">
           <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold tracking-tight">NutriTrack</h1>
+            <h1 className="text-3xl font-bold tracking-tight">MaddiGPT</h1>
             <button
               onClick={() => setShowGoalsModal(true)}
               className="px-5 py-2.5 bg-white/10 hover:bg-white/20 border-2 border-white/30 rounded-xl text-sm font-semibold transition-all duration-200 backdrop-blur-sm"

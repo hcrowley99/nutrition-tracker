@@ -14,9 +14,12 @@ import {
  */
 export default function GoalCalculator({ onSaveGoals, onClose }) {
   const [step, setStep] = useState(1); // 1: metrics, 2: goal selection, 3: review
+  const [unitSystem, setUnitSystem] = useState('imperial'); // 'imperial' or 'metric'
   const [metrics, setMetrics] = useState({
     weight: '',
     height: '',
+    heightFeet: '',
+    heightInches: '',
     age: '',
     sex: 'male',
     activityLevel: 'moderate',
@@ -24,11 +27,31 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
   const [selectedGoal, setSelectedGoal] = useState('balanced');
   const [calculatedGoals, setCalculatedGoals] = useState(null);
 
+  // Convert weight to kg for calculations
+  const getWeightInKg = () => {
+    const weight = parseFloat(metrics.weight);
+    if (unitSystem === 'imperial') {
+      return weight * 0.453592; // lbs to kg
+    }
+    return weight;
+  };
+
+  // Convert height to cm for calculations
+  const getHeightInCm = () => {
+    if (unitSystem === 'imperial') {
+      const feet = parseFloat(metrics.heightFeet) || 0;
+      const inches = parseFloat(metrics.heightInches) || 0;
+      const totalInches = (feet * 12) + inches;
+      return totalInches * 2.54; // inches to cm
+    }
+    return parseFloat(metrics.height);
+  };
+
   // Calculate goals based on metrics
   const calculateGoals = () => {
     const bmr = calculateBMR(
-      parseFloat(metrics.weight),
-      parseFloat(metrics.height),
+      getWeightInKg(),
+      getHeightInCm(),
       parseInt(metrics.age),
       metrics.sex
     );
@@ -50,12 +73,18 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
 
   const handleNext = () => {
     if (step === 1) {
-      // Validate metrics
-      if (!metrics.weight || !metrics.height || !metrics.age) {
+      // Validate metrics based on unit system
+      const hasHeight = unitSystem === 'imperial'
+        ? (metrics.heightFeet || metrics.heightInches)
+        : metrics.height;
+
+      if (!metrics.weight || !hasHeight || !metrics.age) {
         alert('Please fill in all required fields');
         return;
       }
-      if (parseFloat(metrics.weight) <= 0 || parseFloat(metrics.height) <= 0 || parseInt(metrics.age) <= 0) {
+
+      const heightValue = getHeightInCm();
+      if (parseFloat(metrics.weight) <= 0 || heightValue <= 0 || parseInt(metrics.age) <= 0) {
         alert('Please enter valid positive values');
         return;
       }
@@ -66,7 +95,7 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
       setCalculatedGoals(goals);
 
       // Store metrics in localStorage for future reference
-      localStorage.setItem('user-metrics', JSON.stringify(metrics));
+      localStorage.setItem('user-metrics', JSON.stringify({ ...metrics, unitSystem }));
 
       setStep(3);
     }
@@ -132,21 +161,52 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
           <div className="space-y-5">
             <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl p-5 border-2 border-blue-100">
               <p className="text-sm text-blue-900 font-medium">
-                💡 Enter your metrics to calculate personalized nutrition goals using the Mifflin-St Jeor formula
+                Enter your metrics to calculate personalized nutrition goals using the Mifflin-St Jeor formula
               </p>
+            </div>
+
+            {/* Unit System Toggle */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3">
+                Unit System
+              </label>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setUnitSystem('imperial')}
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    unitSystem === 'imperial'
+                      ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Imperial (lbs, ft/in)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUnitSystem('metric')}
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    unitSystem === 'metric'
+                      ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Metric (kg, cm)
+                </button>
+              </div>
             </div>
 
             {/* Weight */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                ⚖️ Weight (kg)
+                Weight ({unitSystem === 'imperial' ? 'lbs' : 'kg'})
               </label>
               <input
                 type="number"
                 value={metrics.weight}
                 onChange={(e) => setMetrics({ ...metrics, weight: e.target.value })}
                 className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
-                placeholder="70"
+                placeholder={unitSystem === 'imperial' ? '150' : '70'}
                 step="0.1"
                 min="0"
                 required
@@ -156,18 +216,48 @@ export default function GoalCalculator({ onSaveGoals, onClose }) {
             {/* Height */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                📏 Height (cm)
+                Height ({unitSystem === 'imperial' ? 'ft / in' : 'cm'})
               </label>
-              <input
-                type="number"
-                value={metrics.height}
-                onChange={(e) => setMetrics({ ...metrics, height: e.target.value })}
-                className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
-                placeholder="175"
-                step="0.1"
-                min="0"
-                required
-              />
+              {unitSystem === 'imperial' ? (
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <input
+                      type="number"
+                      value={metrics.heightFeet}
+                      onChange={(e) => setMetrics({ ...metrics, heightFeet: e.target.value })}
+                      className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
+                      placeholder="5"
+                      min="0"
+                      max="8"
+                    />
+                    <span className="text-xs text-gray-500 mt-1 block text-center">feet</span>
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      type="number"
+                      value={metrics.heightInches}
+                      onChange={(e) => setMetrics({ ...metrics, heightInches: e.target.value })}
+                      className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
+                      placeholder="10"
+                      min="0"
+                      max="11"
+                      step="0.5"
+                    />
+                    <span className="text-xs text-gray-500 mt-1 block text-center">inches</span>
+                  </div>
+                </div>
+              ) : (
+                <input
+                  type="number"
+                  value={metrics.height}
+                  onChange={(e) => setMetrics({ ...metrics, height: e.target.value })}
+                  className="w-full px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 text-lg font-medium transition-all duration-200"
+                  placeholder="175"
+                  step="0.1"
+                  min="0"
+                  required
+                />
+              )}
             </div>
 
             {/* Age */}

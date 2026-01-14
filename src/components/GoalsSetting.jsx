@@ -7,7 +7,7 @@ import GoalCalculator from './GoalCalculator';
  */
 export default function GoalsSetting({ goals, onSaveGoals, onClose }) {
   const [localGoals, setLocalGoals] = useState(goals);
-  const [showCalculator, setShowCalculator] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(true);
 
   const handleChange = (nutrient, value) => {
     const numValue = parseFloat(value) || 0;

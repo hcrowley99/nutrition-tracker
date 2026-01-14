@@ -31,7 +31,7 @@ export default function FoodList({ foods, onDeleteFood }) {
           >
             <div className="flex justify-between items-start mb-3">
               <div className="flex-1 pr-3">
-                <h3 className="font-semibold text-gray-900 text-lg leading-tight">{food.foodName}</h3>
+                <h3 className="font-semibold text-gray-900 text-lg leading-tight">{food.name}</h3>
                 {food.brandName && (
                   <p className="text-sm text-gray-500 font-medium mt-0.5">{food.brandName}</p>
                 )}
