@@ -9,7 +9,57 @@
 - **Tech Stack:** React + Vite, Tailwind CSS, USDA FoodData Central API, Open Food Facts (barcode)
 - **Deployment:** Netlify (auto-deploys currently OFF to manage credits - manual deploy required)
 
-### January 14, 2026 Session
+### January 14, 2026 Session (Continued)
+
+#### 11. Meal Categories ✅
+- **Change:** Replaced single "Today's Foods" section with 4 meal categories
+- **Categories:** Breakfast, Lunch, Dinner, Snacks
+- **Each section shows:** Meal icon, calorie total, food list, "+ Add" button
+- **Migration:** Existing foods without `meal` property default to Snacks
+- **Files:**
+  - `src/components/MealSection.jsx` - New reusable meal section component
+  - `src/components/FoodList.jsx` - Now renders 4 MealSection components
+
+#### 12. Add Food Page ✅
+- **Change:** Replaced inline search + action buttons with full-page tabbed interface
+- **Tabs:**
+  - **Recent:** Last 10 recently added foods
+  - **Search:** USDA database search with filters
+  - **Scan:** Barcode scanner (camera)
+  - **Custom:** Searchable list of saved custom foods + create new
+  - **Copy:** Copy foods from previous days
+- **Flow:** Tap "+ Add" on meal → Add Food page → Select food → Quantity modal → Returns to main view
+- **File:** `src/components/AddFoodPage.jsx` - New tabbed page component
+
+#### 13. Custom Foods List ✅
+- **Feature:** Persistent storage of all custom foods ever created
+- **Searchable:** Filter custom foods by name in the Custom tab
+- **Storage:** localStorage (`custom-foods` key)
+- **Files:**
+  - `src/utils/customFoods.js` - New utility (getCustomFoods, addCustomFood, searchCustomFoods)
+  - `src/components/CustomFoodEntry.jsx` - Now saves to custom foods list
+
+#### 14. Nutrition Data Validation ✅
+- **Issue:** Some USDA API entries have inaccurate calorie data (e.g., 874 cal/100g for lean lamb)
+- **Solution:** Atwater formula cross-check (Calories ≈ P×4 + C×4 + F×9)
+- **Filters out:** Foods where reported calories differ >30% from calculated
+- **Also checks:** Calories >900/100g, macro totals >100g
+- **File:** `src/utils/validateNutrition.js` - New validation utility
+
+#### 15. Food Logger Improvements ✅
+- **Modal width:** Increased from `max-w-md` to `max-w-lg` for better spacing
+- **Unit switching:** Quantity now auto-converts when changing units (e.g., 100g → 3.53oz)
+- **Display units:** Foods show in user-selected units in Today's Foods list
+- **File:** `src/components/FoodLogger.jsx`
+
+#### 16. Timezone Fix ✅
+- **Issue:** Date showed next day after ~7pm EST (was using UTC)
+- **Fix:** Changed all `toISOString()` calls to use local time components
+- **Files:** `src/utils/calculations.js`, `src/App.jsx`, `src/components/CopyFromDay.jsx`, `src/components/SummaryView.jsx`
+
+---
+
+### January 14, 2026 Session (Earlier)
 
 #### 1. App Rebranding ✅
 - **Change:** Renamed app from "NutriTrack" to "MaddiGPT"
@@ -142,12 +192,17 @@ Focused on making food logging more intuitive:
 ### LocalStorage Keys
 ```javascript
 'nutrition-goals'    // Daily nutrition targets
-'logged-foods'       // All logged food entries
+'logged-foods'       // All logged food entries (now includes 'meal' property)
 'user-metrics'       // Body metrics for goal calculator
 'recent-foods'       // Last 10 recently added foods
+'custom-foods'       // All custom food definitions (NEW)
 ```
 
 ### Known Working Features
+- ✅ **Meal categories** (Breakfast, Lunch, Dinner, Snacks)
+- ✅ **Add Food page** with tabbed interface (Recent, Search, Scan, Custom, Copy)
+- ✅ **Custom foods list** - persistent, searchable collection
+- ✅ **Nutrition validation** - filters inaccurate API data using Atwater formula
 - ✅ Food search (USDA database) with smart ranking
 - ✅ Category filters (Generic/Branded)
 - ✅ Quick portion presets & stepper buttons
@@ -155,19 +210,18 @@ Focused on making food logging more intuitive:
 - ✅ Barcode scanning (Open Food Facts)
 - ✅ Daily progress tracking with calorie ring
 - ✅ Weekly/monthly summary views
-- ✅ Date navigation
+- ✅ Date navigation (local timezone)
 - ✅ Goals setting (calculator default, imperial/metric toggle)
 - ✅ Recent foods quick-add
 - ✅ Popular foods suggestions
 - ✅ Copy from prior days
-- ✅ Unit conversion
+- ✅ Unit conversion (with auto-quantity adjustment)
 - ✅ Apple-inspired design throughout
 - ✅ Dark mode UI with proper contrast
 
 ## Potential Future Enhancements
 
 ### Not Yet Implemented
-- [ ] Meal planning feature
 - [ ] Recipe builder
 - [ ] Weight tracking over time
 - [ ] Historical charts/graphs
@@ -175,7 +229,6 @@ Focused on making food logging more intuitive:
 - [ ] Multi-device sync (requires backend)
 - [ ] Micronutrients tracking beyond fiber
 - [ ] Favorite foods (star system)
-- [ ] Meal templates (breakfast, lunch, dinner presets)
 - [ ] Water intake tracking
 - [ ] Export data to CSV/PDF
 
@@ -185,24 +238,22 @@ Focused on making food logging more intuitive:
 - [ ] Better error handling for API failures
 - [ ] Loading skeletons instead of spinners
 - [ ] Undo/redo for deletions
-- [ ] Search within recent foods
-- [ ] Filter copy modal by meal type
 - [ ] Bulk edit quantities
 - [ ] Food notes/tags
 
 ## Testing Needed
 
 ### Features to Verify on iPhone
-1. **Barcode Scanner:** Point at product barcode (UPC-A/EAN-13)
-2. **Goal Calculator:** Verify opens by default, test imperial/metric toggle
-3. **Recent Foods:** Add 5+ foods, verify they appear
-4. **Copy Function:** Log foods on multiple days, copy between dates
-5. **Unit Conversion:** Try g→oz, ml→cups conversions
-6. **Portion Presets:** Tap preset buttons, verify quantity updates
-7. **Stepper Buttons:** Use +/- to adjust amounts
-8. **Category Filters:** Search "chicken", toggle Generic/Branded filters
-9. **Popular Foods:** Clear search, tap a suggested food chip
-10. **Food Titles:** Verify food names show in Today's Foods list
+1. **Meal Sections:** Verify 4 meal categories display (Breakfast, Lunch, Dinner, Snacks)
+2. **Add Food Page:** Tap "+ Add" on any meal, verify tabbed page opens
+3. **Tab Navigation:** Test all 5 tabs (Recent, Search, Scan, Custom, Copy)
+4. **Custom Foods:** Create a custom food, verify it appears in Custom tab
+5. **Barcode Scanner:** Point at product barcode (UPC-A/EAN-13)
+6. **Goal Calculator:** Verify opens by default, test imperial/metric toggle
+7. **Recent Foods:** Add 5+ foods, verify they appear in Recent tab
+8. **Copy Function:** Log foods on multiple days, copy between dates
+9. **Unit Conversion:** Try g→oz, verify quantity auto-converts
+10. **Date Display:** Verify correct local date (not UTC)
 
 ### Edge Cases to Test
 - Empty states (no foods, no recent, no prior days)
@@ -235,29 +286,33 @@ Focused on making food logging more intuitive:
 ```
 src/
 ├── components/
-│   ├── BarcodeScanner.jsx       [Barcode detection]
+│   ├── AddFoodPage.jsx           [NEW - Tabbed add food interface]
+│   ├── BarcodeScanner.jsx        [Barcode detection]
 │   ├── CalorieRing.jsx           [SVG circular progress]
-│   ├── CopyFromDay.jsx           [Copy foods modal]
-│   ├── CustomFoodEntry.jsx       [Manual food entry]
+│   ├── CopyFromDay.jsx           [Copy foods - integrated in AddFoodPage]
+│   ├── CustomFoodEntry.jsx       [Manual food entry - saves to custom list]
 │   ├── DailyProgress.jsx         [Calorie ring + macros]
-│   ├── FoodList.jsx              [Today's logged foods - fixed title]
+│   ├── FoodList.jsx              [Renders 4 MealSection components]
 │   ├── FoodLogger.jsx            [Portion presets, steppers, unit conversion]
-│   ├── FoodSearch.jsx            [Search, filters, recent foods, popular suggestions]
+│   ├── FoodSearch.jsx            [Search - integrated in AddFoodPage]
 │   ├── GoalCalculator.jsx        [3-step calculator, imperial/metric toggle]
 │   ├── GoalsSetting.jsx          [Calculator opens by default]
+│   ├── MealSection.jsx           [NEW - Reusable meal category component]
 │   └── SummaryView.jsx           [Weekly/monthly stats]
 ├── hooks/
 │   ├── useFoodSearch.js          [Search with ranking, 300ms debounce]
 │   └── useLocalStorage.js        [Persist to localStorage]
 ├── utils/
-│   ├── api.js                    [USDA + Open Food Facts]
-│   ├── calculations.js           [Nutrition math]
+│   ├── api.js                    [USDA + Open Food Facts + validation]
+│   ├── calculations.js           [Nutrition math, local timezone dates]
+│   ├── customFoods.js            [NEW - Custom foods localStorage manager]
 │   ├── goalCalculations.js       [BMR/TDEE formulas]
 │   ├── portionPresets.js         [Smart portion presets + step sizes]
 │   ├── recentFoods.js            [Recent foods manager]
 │   ├── searchRanking.js          [Relevance scoring for search]
-│   └── unitConversions.js        [Unit conversion logic]
-└── App.jsx                       [Main app - MaddiGPT branding]
+│   ├── unitConversions.js        [Unit conversion logic]
+│   └── validateNutrition.js      [NEW - Atwater formula validation]
+└── App.jsx                       [Main app - routing, meal context]
 ```
 
 ## API Keys & Environment
@@ -284,4 +339,4 @@ git push origin main
 6. Check GitHub issues or plan document for next tasks
 
 ## Last Updated
-January 14, 2026
+January 14, 2026 (Evening Session)
