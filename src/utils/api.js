@@ -1,4 +1,5 @@
 import { normalizeUnit } from './unitConversions';
+import { filterInvalidFoods } from './validateNutrition';
 
 // Get API key from environment variables
 const API_KEY = import.meta.env.VITE_USDA_API_KEY;
@@ -27,7 +28,7 @@ export async function searchFoods(query) {
     const data = await response.json();
 
     // Simplify and standardize the response
-    return data.foods.map(food => {
+    const foods = data.foods.map(food => {
       // Helper function to find nutrient value
       const getNutrient = (nutrientName) => {
         const nutrient = food.foodNutrients?.find(n =>
@@ -51,6 +52,9 @@ export async function searchFoods(query) {
         dataType: food.dataType // Survey (FNDDS) or Branded
       };
     });
+
+    // Filter out foods with invalid/suspicious nutritional data
+    return filterInvalidFoods(foods, { logFiltered: true });
   } catch (error) {
     console.error('Error searching foods:', error);
     throw new Error('Failed to search foods. Please try again.');

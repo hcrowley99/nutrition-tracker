@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { addCustomFood } from '../utils/customFoods';
 
 /**
  * Custom Food Entry Component
  * Allows users to manually enter a food item with nutrition information
  */
-export default function CustomFoodEntry({ onAddFood, onCancel }) {
+export default function CustomFoodEntry({ onAddFood, onCancel, saveToList = true }) {
   const [formData, setFormData] = useState({
     name: '',
     calories: '',
@@ -36,6 +37,11 @@ export default function CustomFoodEntry({ onAddFood, onCancel }) {
       servingSize: parseFloat(formData.servingSize),
       servingUnit: formData.servingUnit,
     };
+
+    // Save to persistent custom foods list if requested
+    if (saveToList) {
+      addCustomFood(customFood);
+    }
 
     onAddFood(customFood);
   };

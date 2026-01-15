@@ -6,6 +6,14 @@ import { calculateDailyTotals, formatDate, getTodayDate } from '../utils/calcula
  * Shows weekly and monthly nutrition summaries
  */
 export default function SummaryView({ loggedFoods, goals, viewType }) {
+  // Helper to format date as YYYY-MM-DD using local time
+  const formatDateStr = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   // Get date range based on view type
   const dateRange = useMemo(() => {
     const today = new Date(getTodayDate() + 'T00:00:00');
@@ -16,7 +24,7 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
       for (let i = 6; i >= 0; i--) {
         const date = new Date(today);
         date.setDate(date.getDate() - i);
-        dates.push(date.toISOString().split('T')[0]);
+        dates.push(formatDateStr(date));
       }
     } else if (viewType === 'monthly') {
       // Current month
@@ -27,7 +35,7 @@ export default function SummaryView({ loggedFoods, goals, viewType }) {
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(year, month, day);
         if (date <= today) {
-          dates.push(date.toISOString().split('T')[0]);
+          dates.push(formatDateStr(date));
         }
       }
     }

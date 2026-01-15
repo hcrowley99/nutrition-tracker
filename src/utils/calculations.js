@@ -59,13 +59,16 @@ export function calculatePortionNutrients(foodData, quantity) {
 }
 
 /**
- * Get today's date in YYYY-MM-DD format
+ * Get today's date in YYYY-MM-DD format (using local time)
  *
  * @returns {string} - Today's date
  */
 export function getTodayDate() {
   const today = new Date();
-  return today.toISOString().split('T')[0];
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /**

@@ -22,6 +22,20 @@ export default function FoodLogger({ food, onAddFood, onCancel }) {
   // Calculate adjusted nutrients based on quantity
   const adjustedNutrients = calculatePortionNutrients(food, quantity);
 
+  // Handle unit change - convert displayAmount to maintain same food quantity
+  const handleUnitChange = (newUnit) => {
+    if (newUnit === displayUnit) return;
+
+    // Convert current displayAmount from current unit to new unit
+    const converted = convertUnit(displayAmount, displayUnit, newUnit);
+    if (converted !== null) {
+      // Round to reasonable precision based on unit
+      const precision = newUnit === 'g' || newUnit === 'ml' ? 0 : 2;
+      setDisplayAmount(Math.round(converted * Math.pow(10, precision)) / Math.pow(10, precision));
+    }
+    setDisplayUnit(newUnit);
+  };
+
   // Update quantity when display unit or amount changes
   useEffect(() => {
     if (displayUnit !== food.servingUnit) {
@@ -44,6 +58,9 @@ export default function FoodLogger({ food, onAddFood, onCancel }) {
       protein: adjustedNutrients.protein,
       carbs: adjustedNutrients.carbs,
       fat: adjustedNutrients.fat,
+      // Store the user's selected display values for showing in Today's Foods
+      displayAmount,
+      displayUnit,
     };
 
     onAddFood(loggedFood);
@@ -51,7 +68,7 @@ export default function FoodLogger({ food, onAddFood, onCancel }) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-      <div className="bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-700 animate-scale-in">
+      <div className="bg-gray-800 rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-700 animate-scale-in">
         <h2 className="text-3xl font-bold text-white mb-5">
           Add Food
         </h2>
@@ -126,8 +143,8 @@ export default function FoodLogger({ food, onAddFood, onCancel }) {
               {compatibleUnits.length > 1 ? (
                 <select
                   value={displayUnit}
-                  onChange={(e) => setDisplayUnit(e.target.value)}
-                  className="px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-xl focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 text-lg font-medium text-white transition-all duration-200 shadow-sm focus:shadow-md"
+                  onChange={(e) => handleUnitChange(e.target.value)}
+                  className="px-4 py-3.5 bg-gray-700 border-2 border-gray-600 rounded-xl focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 text-lg font-medium text-white transition-all duration-200 shadow-sm focus:shadow-md min-w-[80px]"
                 >
                   {compatibleUnits.map(unit => (
                     <option key={unit} value={unit}>{unit}</option>

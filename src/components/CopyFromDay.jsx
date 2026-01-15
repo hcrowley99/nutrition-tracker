@@ -31,8 +31,11 @@ export default function CopyFromDay({ loggedFoods, selectedDate, onCopyFoods, on
   const copyFromYesterday = () => {
     const yesterday = new Date(selectedDate + 'T00:00:00');
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-    setSourceDate(yesterdayStr);
+    // Use local time components instead of toISOString (which uses UTC)
+    const year = yesterday.getFullYear();
+    const month = String(yesterday.getMonth() + 1).padStart(2, '0');
+    const day = String(yesterday.getDate()).padStart(2, '0');
+    setSourceDate(`${year}-${month}-${day}`);
   };
 
   // Toggle food selection

@@ -4,13 +4,10 @@ import { calculateDailyTotals, calculateProgress, getTodayDate, formatDate } fro
 import { addToRecentFoods } from './utils/recentFoods';
 import GoalsSetting from './components/GoalsSetting';
 import DailyProgress from './components/DailyProgress';
-import FoodSearch from './components/FoodSearch';
 import FoodLogger from './components/FoodLogger';
 import FoodList from './components/FoodList';
-import CustomFoodEntry from './components/CustomFoodEntry';
 import SummaryView from './components/SummaryView';
-import BarcodeScanner from './components/BarcodeScanner';
-import CopyFromDay from './components/CopyFromDay';
+import AddFoodPage from './components/AddFoodPage';
 
 // Default nutrition goals
 const DEFAULT_GOALS = {
@@ -28,10 +25,11 @@ function App() {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const [showGoalsModal, setShowGoalsModal] = useState(false);
   const [selectedFood, setSelectedFood] = useState(null);
-  const [showCustomFoodModal, setShowCustomFoodModal] = useState(false);
-  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
-  const [showCopyModal, setShowCopyModal] = useState(false);
   const [viewMode, setViewMode] = useState('daily'); // 'daily', 'weekly', 'monthly'
+
+  // Add Food Page state
+  const [showAddFoodPage, setShowAddFoodPage] = useState(false);
+  const [activeMealCategory, setActiveMealCategory] = useState(null);
 
   // Calculate totals and progress for selected date
   const todaysFoods = loggedFoods.filter(food => food.date === selectedDate);
@@ -44,21 +42,15 @@ function App() {
     setShowGoalsModal(false);
   };
 
-  // Handler: Select food from search (opens logger modal)
+  // Handler: Open Add Food page for a meal
+  const handleOpenAddFood = (mealCategory) => {
+    setActiveMealCategory(mealCategory);
+    setShowAddFoodPage(true);
+  };
+
+  // Handler: Select food from Add Food page (opens logger modal)
   const handleSelectFood = (food) => {
     setSelectedFood(food);
-  };
-
-  // Handler: Add custom food (opens logger modal)
-  const handleAddCustomFood = (customFood) => {
-    setShowCustomFoodModal(false);
-    setSelectedFood(customFood); // Pass to logger modal for quantity adjustment
-  };
-
-  // Handler: Food found from barcode scan (opens logger modal)
-  const handleBarcodeScanned = (food) => {
-    setShowBarcodeScanner(false);
-    setSelectedFood(food); // Pass to logger modal for quantity adjustment
   };
 
   // Handler: Add food to log
@@ -67,6 +59,7 @@ function App() {
       ...loggedFood,
       id: Date.now().toString(), // Simple unique ID
       date: selectedDate,
+      meal: activeMealCategory, // Add meal category
     };
 
     setLoggedFoods([...loggedFoods, newFood]);
@@ -86,7 +79,10 @@ function App() {
       dataType: loggedFood.dataType,
     });
 
-    setSelectedFood(null); // Close modal
+    // Close both modal and page, return to main view
+    setSelectedFood(null);
+    setShowAddFoodPage(false);
+    setActiveMealCategory(null);
   };
 
   // Handler: Delete food from log
@@ -102,18 +98,60 @@ function App() {
       ...food,
       id: Date.now().toString() + Math.random(), // New unique ID
       date: selectedDate, // Copy to current selected date
+      meal: activeMealCategory, // Copy to current meal category
     }));
 
     setLoggedFoods([...loggedFoods, ...newFoods]);
+
+    // Close page and return to main view
+    setShowAddFoodPage(false);
+    setActiveMealCategory(null);
   };
 
   // Handler: Change date
   const handleDateChange = (days) => {
     const currentDate = new Date(selectedDate + 'T00:00:00');
     currentDate.setDate(currentDate.getDate() + days);
-    setSelectedDate(currentDate.toISOString().split('T')[0]);
+    // Use local time components instead of toISOString (which uses UTC)
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    setSelectedDate(`${year}-${month}-${day}`);
   };
 
+  // Handler: Close Add Food page
+  const handleCloseAddFoodPage = () => {
+    setShowAddFoodPage(false);
+    setActiveMealCategory(null);
+    setSelectedFood(null);
+  };
+
+  // Render Add Food Page
+  if (showAddFoodPage) {
+    return (
+      <>
+        <AddFoodPage
+          mealCategory={activeMealCategory}
+          onSelectFood={handleSelectFood}
+          onClose={handleCloseAddFoodPage}
+          onCopyFoods={handleCopyFoods}
+          loggedFoods={loggedFoods}
+          selectedDate={selectedDate}
+        />
+
+        {/* FoodLogger modal overlays the Add Food page */}
+        {selectedFood && (
+          <FoodLogger
+            food={selectedFood}
+            onAddFood={handleAddFood}
+            onCancel={() => setSelectedFood(null)}
+          />
+        )}
+      </>
+    );
+  }
+
+  // Render Main View
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800">
       {/* Header */}
@@ -204,49 +242,19 @@ function App() {
             {/* Daily Progress */}
             <DailyProgress totals={totals} goals={goals} progress={progress} />
 
-            {/* Food Search and Action Buttons */}
-            <div className="space-y-3">
-              <FoodSearch onSelectFood={handleSelectFood} />
-
-              {/* Action Buttons */}
-              <div className="grid grid-cols-3 gap-3">
-                <button
-                  onClick={() => setShowBarcodeScanner(true)}
-                  className="px-4 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md flex items-center justify-center gap-2 active:scale-95"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span className="hidden sm:inline">Scan</span>
-                </button>
-                <button
-                  onClick={() => setShowCustomFoodModal(true)}
-                  className="px-4 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md active:scale-95"
-                >
-                  + Custom
-                </button>
-                <button
-                  onClick={() => setShowCopyModal(true)}
-                  className="px-4 py-3 bg-gradient-to-r from-cyan-500 to-teal-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all duration-200 shadow-md flex items-center justify-center gap-2 active:scale-95"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                  </svg>
-                  <span className="hidden sm:inline">Copy</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Food List */}
-            <FoodList foods={todaysFoods} onDeleteFood={handleDeleteFood} />
+            {/* Food List with Meal Sections */}
+            <FoodList
+              foods={todaysFoods}
+              onDeleteFood={handleDeleteFood}
+              onAddFood={handleOpenAddFood}
+            />
           </>
         ) : (
           <SummaryView loggedFoods={loggedFoods} goals={goals} viewType={viewMode} />
         )}
       </main>
 
-      {/* Modals */}
+      {/* Goals Modal */}
       {showGoalsModal && (
         <GoalsSetting
           goals={goals}
@@ -254,40 +262,8 @@ function App() {
           onClose={() => setShowGoalsModal(false)}
         />
       )}
-
-      {showCustomFoodModal && (
-        <CustomFoodEntry
-          onAddFood={handleAddCustomFood}
-          onCancel={() => setShowCustomFoodModal(false)}
-        />
-      )}
-
-      {showBarcodeScanner && (
-        <BarcodeScanner
-          onFoodFound={handleBarcodeScanned}
-          onClose={() => setShowBarcodeScanner(false)}
-        />
-      )}
-
-      {selectedFood && (
-        <FoodLogger
-          food={selectedFood}
-          onAddFood={handleAddFood}
-          onCancel={() => setSelectedFood(null)}
-        />
-      )}
-
-      {showCopyModal && (
-        <CopyFromDay
-          loggedFoods={loggedFoods}
-          selectedDate={selectedDate}
-          onCopyFoods={handleCopyFoods}
-          onClose={() => setShowCopyModal(false)}
-        />
-      )}
     </div>
   );
 }
 
 export default App;
-
