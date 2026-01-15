@@ -48,10 +48,10 @@ export function calculateTDEE(bmr, activityLevel) {
  */
 export function calculateMacros(calories, preset) {
   const presets = {
-    weightLoss: { protein: 0.40, carbs: 0.30, fat: 0.30 },
-    muscleGain: { protein: 0.30, carbs: 0.40, fat: 0.30 },
-    maintenance: { protein: 0.25, carbs: 0.45, fat: 0.30 },
-    balanced: { protein: 0.30, carbs: 0.40, fat: 0.30 },
+    weightLoss: { protein: 0.25, carbs: 0.45, fat: 0.30 },    // Higher protein for muscle preservation
+    muscleGain: { protein: 0.25, carbs: 0.50, fat: 0.25 },    // High carbs for energy/recovery
+    maintenance: { protein: 0.20, carbs: 0.50, fat: 0.30 },   // Balanced for general health
+    balanced: { protein: 0.20, carbs: 0.50, fat: 0.30 },      // Same as maintenance
   };
 
   const ratios = presets[preset] || presets.balanced;
@@ -129,28 +129,28 @@ export const GOAL_PRESETS = [
     key: 'weightLoss',
     label: 'Weight Loss',
     emoji: '🎯',
-    description: '40% protein, 30% carbs, 30% fat',
+    description: '25% protein, 45% carbs, 30% fat',
     detail: '500 calorie deficit for steady fat loss',
   },
   {
     key: 'muscleGain',
     label: 'Muscle Gain',
     emoji: '💪',
-    description: '30% protein, 40% carbs, 30% fat',
+    description: '25% protein, 50% carbs, 25% fat',
     detail: '300 calorie surplus for lean muscle growth',
   },
   {
     key: 'maintenance',
     label: 'Maintenance',
     emoji: '⚖️',
-    description: '25% protein, 45% carbs, 30% fat',
+    description: '20% protein, 50% carbs, 30% fat',
     detail: 'Maintain current weight and composition',
   },
   {
     key: 'balanced',
     label: 'Balanced',
     emoji: '🌟',
-    description: '30% protein, 40% carbs, 30% fat',
+    description: '20% protein, 50% carbs, 30% fat',
     detail: 'Well-rounded nutrition for general health',
   },
 ];
